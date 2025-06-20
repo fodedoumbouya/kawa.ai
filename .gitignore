@@ -1,0 +1,5 @@
+data/
+data/badger/
+*.log
+*.project_pids
+*_info
