@@ -15,6 +15,7 @@ NC = \033[0m # No Color
 CODE_SERVER_DIR = vscode_preview
 KAWA_DIR = kawa_server
 KAWA_WEB_DIR = kawa_web
+KAWA_WEB_PORT = 8000
 
 # Dynamic port/host storage
 SERVICE_INFO_FILE = .service_info
@@ -297,14 +298,14 @@ run-kawa-web: build-kawa-web ## Start kawa_web using Python HTTP server
 	fi
 	@echo "$(BLUE)Starting Python HTTP server on port 8000$(NC)"
 	@if command -v python3 >/dev/null 2>&1; then \
-		cd $(KAWA_WEB_DIR)/build/web && python3 -m http.server 8000 > ../../../kawa_web.log 2>&1 & \
+		cd $(KAWA_WEB_DIR)/build/web && python3 -m http.server $(KAWA_WEB_PORT) > ../../../kawa_web.log 2>&1 & \
 	else \
-		cd $(KAWA_WEB_DIR)/build/web && python -m http.server 8000 > ../../../kawa_web.log 2>&1 & \
+		cd $(KAWA_WEB_DIR)/build/web && python -m http.server $(KAWA_WEB_PORT) > ../../../kawa_web.log 2>&1 & \
 	fi; \
 	KAWA_WEB_PID=$$!; \
 	echo $$KAWA_WEB_PID >> $(PIDS_FILE); \
 	echo "$(BLUE)Waiting for kawa_web HTTP server to start...$(NC)"; \
-	KAWA_WEB_URL="http://127.0.0.1:8000"; \
+	KAWA_WEB_URL="http://127.0.0.1:$(KAWA_WEB_PORT)"; \
 	for i in $$(seq 1 30); do \
 		if curl -s $$KAWA_WEB_URL >/dev/null 2>&1; then \
 			echo "$(GREEN)✓ kawa_web is ready at $$KAWA_WEB_URL$(NC)"; \
