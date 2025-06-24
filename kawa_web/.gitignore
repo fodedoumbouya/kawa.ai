@@ -50,3 +50,5 @@ app.*.map.json
 
 .env
 .vscode/
+
+macos/DerivedData/

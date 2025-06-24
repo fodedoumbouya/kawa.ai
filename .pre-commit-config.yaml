@@ -3,20 +3,12 @@ repos:
     rev: v5.0.0
     hooks:
       - id: check-yaml
+        exclude: ^vscode_preview/  # Exclude vscode_preview directory from YAML checks
       - id: check-added-large-files
         args: ['--maxkb=15000']  # max file size 15MB
       - id: check-merge-conflict
       - id: mixed-line-ending
-
-  # Golang hooks
-  - repo: https://github.com/dnephin/pre-commit-golang
-    rev: v0.5.1
-    hooks:
-      - id: go-fmt
-      - id: go-vet-mod
-      - id: go-mod-tidy
-      - id: go-unit-tests
-      - id: golangci-lint
+        exclude: ^(kawa_web/build/|vscode_preview/)  # Exclude build artifacts
 
   - repo: local
     hooks:
@@ -90,4 +82,15 @@ repos:
           - 'cd kawa_server && go mod tidy'
         language: system
         files: ^kawa_server/(go\.mod|go\.sum|.*\.go)$
+
+      # Go test for kawa_server
+      - id: go-test-kawa-server
+        name: Run Go tests for kawa_server
+        description: Run go test on kawa_server directory
+        entry: bash
+        args:
+          - -c
+          - 'cd kawa_server && go test ./...'
+        language: system
+        files: ^kawa_server/.*\.go$
 

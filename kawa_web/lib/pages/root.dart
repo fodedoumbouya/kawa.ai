@@ -44,10 +44,10 @@ class Root extends ConsumerWidget {
             //     ? const Locale('fr', 'FR')
             //     : const Locale('en', 'US'),
 
-            supportedLocales: const [
-              Locale('fr', 'FR'),
-              Locale('en', 'US'),
-            ],
+            // supportedLocales: const [
+            //   Locale('fr', 'FR'),
+            //   Locale('en', 'US'),
+            // ],
             builder: (context, child) {
               final childWithToast = Toast(
                   navigatorKey: AppRouter.navigatorKey,
@@ -57,11 +57,6 @@ class Root extends ConsumerWidget {
                 body: childWithToast,
               );
             },
-
-            // Cette partie est pour unquement pour tester les UI
-            // false pour tester test_ui.dart
-            // true pour  l'application
-            // home: const HomePage(),
           );
         },
       );

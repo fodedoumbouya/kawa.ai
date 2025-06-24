@@ -1,4 +1,3 @@
-
 // part 'projectPlan.mapper.dart';
 
 // {

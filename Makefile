@@ -1,7 +1,7 @@
 # Project Runner Makefile
 # Runs code-server, kawa, and kawa_web projects
 
-.PHONY: all run-all stop-all clean help setup-env setup test
+.PHONY: all run-all stop-all clean help setup-env setup test setup-precommit check-precommit
 .DEFAULT_GOAL := help
 
 # Colors for output
@@ -47,6 +47,7 @@ check-dependencies: ## Check if required tools are installed
 	@command -v code-server >/dev/null 2>&1 || { echo "$(RED)✗ code-server not found$(NC)"; exit 1; }
 	@command -v go >/dev/null 2>&1 || { echo "$(RED)✗ Go not found$(NC)"; exit 1; }
 	@command -v python >/dev/null 2>&1 || command -v python3 >/dev/null 2>&1 || { echo "$(RED)✗ Python not found$(NC)"; exit 1; }
+	@command -v pre-commit >/dev/null 2>&1 || { echo "$(YELLOW)⚠ pre-commit not found - will attempt to install$(NC)"; }
 	@if command -v flutter >/dev/null 2>&1; then \
 		echo "$(GREEN)✓ Flutter found$(NC)"; \
 	else \
@@ -56,6 +57,24 @@ check-dependencies: ## Check if required tools are installed
 
 setup: ## Setup all projects (go mod tidy + flutter pub get if available)
 	@echo "$(BLUE)🔧 Setting up all projects...$(NC)"
+	@echo ""
+	@echo "$(YELLOW)Setting up pre-commit hooks...$(NC)"
+	@if ! command -v pre-commit >/dev/null 2>&1; then \
+		echo "$(YELLOW)Installing pre-commit...$(NC)"; \
+		if command -v pip3 >/dev/null 2>&1; then \
+			pip3 install pre-commit; \
+		elif command -v pip >/dev/null 2>&1; then \
+			pip install pre-commit; \
+		elif command -v brew >/dev/null 2>&1; then \
+			brew install pre-commit; \
+		else \
+			echo "$(RED)✗ Could not install pre-commit. Please install manually$(NC)"; \
+			exit 1; \
+		fi; \
+	fi
+	@pre-commit install
+	@pre-commit install --hook-type commit-msg
+	@echo "$(GREEN)✓ Pre-commit hooks installed$(NC)"
 	@echo ""
 	@echo "$(YELLOW)Setting up Kawa (Go) project...$(NC)"
 	@if [ ! -d "$(KAWA_DIR)" ]; then \
@@ -105,6 +124,46 @@ test: ## Run tests for all projects
 	fi
 	@echo ""
 	@echo "$(GREEN)🎉 All available tests passed successfully!$(NC)"
+
+setup-precommit: ## Install and setup pre-commit hooks
+	@echo "$(BLUE)🔧 Setting up pre-commit hooks...$(NC)"
+	@if ! command -v pre-commit >/dev/null 2>&1; then \
+		echo "$(YELLOW)Installing pre-commit...$(NC)"; \
+		if command -v pip3 >/dev/null 2>&1; then \
+			pip3 install pre-commit; \
+		elif command -v pip >/dev/null 2>&1; then \
+			pip install pre-commit; \
+		elif command -v brew >/dev/null 2>&1; then \
+			brew install pre-commit; \
+		else \
+			echo "$(RED)✗ Could not install pre-commit. Please install manually$(NC)"; \
+			echo "$(BLUE)Visit: https://pre-commit.com/#install$(NC)"; \
+			exit 1; \
+		fi; \
+	else \
+		echo "$(GREEN)✓ pre-commit already installed$(NC)"; \
+	fi
+	@pre-commit install
+	@pre-commit install --hook-type commit-msg
+	@echo "$(GREEN)✓ Pre-commit hooks installed successfully$(NC)"
+	@echo "$(BLUE)💡 Pre-commit will now run automatically on each commit$(NC)"
+
+check-precommit: ## Run pre-commit hooks on all files
+	@echo "$(BLUE)🔍 Running pre-commit hooks on all files...$(NC)"
+	@if ! command -v pre-commit >/dev/null 2>&1; then \
+		echo "$(RED)✗ pre-commit not installed. Run 'make setup-precommit' first$(NC)"; \
+		exit 1; \
+	fi
+	@pre-commit run --all-files
+
+update-precommit: ## Update pre-commit hooks to latest versions
+	@echo "$(BLUE)🔄 Updating pre-commit hooks...$(NC)"
+	@if ! command -v pre-commit >/dev/null 2>&1; then \
+		echo "$(RED)✗ pre-commit not installed. Run 'make setup-precommit' first$(NC)"; \
+		exit 1; \
+	fi
+	@pre-commit autoupdate
+	@echo "$(GREEN)✓ Pre-commit hooks updated$(NC)"
 
 extract-port-from-log: ## Helper to extract port from log file
 	@grep -o "http://[^[:space:]]*" $(1) 2>/dev/null | head -1 || \
