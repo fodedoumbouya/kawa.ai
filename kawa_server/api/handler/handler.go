@@ -1,15 +1,15 @@
 package handler
 
 import (
-	"go_manager/api/config"
-	downloadHandler "go_manager/api/downloadHandler"
-	editscreen "go_manager/api/editScreen"
-	getVscodeHandle "go_manager/api/getVscodeHandle"
-	gitmanagerhandler "go_manager/api/gitManagerHandler"
-	projectplan "go_manager/api/projectPlan"
-	referenceshandler "go_manager/api/referenceshandler"
-	reload "go_manager/internal/hotRestartChannel"
-	projectProgess "go_manager/internal/projectProgressState"
+	"github.com/fodedoumbouya/kawa.ai/api/config"
+	downloadHandler "github.com/fodedoumbouya/kawa.ai/api/downloadHandler"
+	editscreen "github.com/fodedoumbouya/kawa.ai/api/editScreen"
+	getVscodeHandle "github.com/fodedoumbouya/kawa.ai/api/getVscodeHandle"
+	gitmanagerhandler "github.com/fodedoumbouya/kawa.ai/api/gitManagerHandler"
+	projectplan "github.com/fodedoumbouya/kawa.ai/api/projectPlan"
+	referenceshandler "github.com/fodedoumbouya/kawa.ai/api/referencesHandler"
+	reload "github.com/fodedoumbouya/kawa.ai/internal/hotRestartChannel"
+	projectProgess "github.com/fodedoumbouya/kawa.ai/internal/projectProgressState"
 
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"

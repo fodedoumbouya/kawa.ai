@@ -3,15 +3,16 @@ package managecreateapplycode
 import (
 	"encoding/json"
 	"fmt"
-	"go_manager/internal/action"
-	"go_manager/internal/llm"
-	app_model "go_manager/internal/model"
-	pbdbutil "go_manager/internal/pbDbUtil"
-	"go_manager/internal/utility"
 
-	projectProgess "go_manager/internal/projectProgressState"
+	"github.com/fodedoumbouya/kawa.ai/internal/action"
+	"github.com/fodedoumbouya/kawa.ai/internal/llm"
+	app_model "github.com/fodedoumbouya/kawa.ai/internal/model"
+	pbdbutil "github.com/fodedoumbouya/kawa.ai/internal/pbDbUtil"
+	"github.com/fodedoumbouya/kawa.ai/internal/utility"
 
-	git "go_manager/internal/gitManager"
+	projectProgess "github.com/fodedoumbouya/kawa.ai/internal/projectProgressState"
+
+	git "github.com/fodedoumbouya/kawa.ai/internal/gitManager"
 
 	"github.com/pocketbase/pocketbase/core"
 	// Add these new imports

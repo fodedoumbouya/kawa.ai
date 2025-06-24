@@ -3,19 +3,20 @@ package managecreateapplycode
 import (
 	"encoding/json"
 	"fmt"
-	"go_manager/internal/action"
-	"go_manager/internal/directory"
-	directory_utils "go_manager/internal/directory"
-	"go_manager/internal/llm"
-	"go_manager/internal/model"
-	"go_manager/internal/utility"
 	"io"
 	"net/http"
 	"os/exec"
 	"strings"
 	"sync"
 
-	git "go_manager/internal/gitManager"
+	"github.com/fodedoumbouya/kawa.ai/internal/action"
+	"github.com/fodedoumbouya/kawa.ai/internal/directory"
+	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
+	"github.com/fodedoumbouya/kawa.ai/internal/llm"
+	"github.com/fodedoumbouya/kawa.ai/internal/model"
+	"github.com/fodedoumbouya/kawa.ai/internal/utility"
+
+	git "github.com/fodedoumbouya/kawa.ai/internal/gitManager"
 
 	"github.com/pocketbase/pocketbase/core"
 )

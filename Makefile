@@ -1,7 +1,7 @@
 # Project Runner Makefile
 # Runs code-server, kawa, and kawa_web projects
 
-.PHONY: all run-all stop-all clean help setup-env
+.PHONY: all run-all stop-all clean help setup-env setup test
 .DEFAULT_GOAL := help
 
 # Colors for output
@@ -45,8 +45,65 @@ check-dependencies: ## Check if required tools are installed
 	@echo "$(YELLOW)Checking dependencies...$(NC)"
 	@command -v code-server >/dev/null 2>&1 || { echo "$(RED)✗ code-server not found$(NC)"; exit 1; }
 	@command -v go >/dev/null 2>&1 || { echo "$(RED)✗ Go not found$(NC)"; exit 1; }
-	@command -v flutter >/dev/null 2>&1 || { echo "$(RED)✗ Flutter not found$(NC)"; exit 1; }
-	@echo "$(GREEN)✓ All dependencies found$(NC)"
+	@command -v python >/dev/null 2>&1 || command -v python3 >/dev/null 2>&1 || { echo "$(RED)✗ Python not found$(NC)"; exit 1; }
+	@if command -v flutter >/dev/null 2>&1; then \
+		echo "$(GREEN)✓ Flutter found$(NC)"; \
+	else \
+		echo "$(YELLOW)⚠ Flutter not found - will serve pre-built web files$(NC)"; \
+	fi
+	@echo "$(GREEN)✓ Required dependencies found$(NC)"
+
+setup: ## Setup all projects (go mod tidy + flutter pub get if available)
+	@echo "$(BLUE)🔧 Setting up all projects...$(NC)"
+	@echo ""
+	@echo "$(YELLOW)Setting up Kawa (Go) project...$(NC)"
+	@if [ ! -d "$(KAWA_DIR)" ]; then \
+		echo "$(RED)✗ kawa directory not found$(NC)"; \
+		exit 1; \
+	fi
+	@cd $(KAWA_DIR) && go mod tidy
+	@echo "$(GREEN)✓ Kawa setup complete$(NC)"
+	@echo ""
+	@echo "$(YELLOW)Setting up Kawa Web project...$(NC)"
+	@if [ ! -d "$(KAWA_WEB_DIR)" ]; then \
+		echo "$(RED)✗ kawa_web directory not found$(NC)"; \
+		exit 1; \
+	fi
+	@if command -v flutter >/dev/null 2>&1; then \
+		echo "$(BLUE)Flutter found - running flutter pub get$(NC)"; \
+		cd $(KAWA_WEB_DIR) && flutter pub get; \
+		echo "$(GREEN)✓ Kawa Web Flutter setup complete$(NC)"; \
+	else \
+		echo "$(YELLOW)Flutter not found - skipping flutter pub get$(NC)"; \
+		echo "$(BLUE)Will serve pre-built files from build/web$(NC)"; \
+	fi
+	@echo ""
+	@echo "$(GREEN)🎉 All projects setup successfully!$(NC)"
+
+test: ## Run tests for all projects
+	@echo "$(BLUE)🧪 Running tests for all projects...$(NC)"
+	@echo ""
+	@echo "$(YELLOW)Testing Kawa (Go) project...$(NC)"
+	@if [ ! -d "$(KAWA_DIR)" ]; then \
+		echo "$(RED)✗ kawa directory not found$(NC)"; \
+		exit 1; \
+	fi
+	@cd $(KAWA_DIR) && go test ./... -v || { echo "$(RED)✗ Kawa tests failed$(NC)"; exit 1; }
+	@echo "$(GREEN)✓ Kawa tests passed$(NC)"
+	@echo ""
+	@if command -v flutter >/dev/null 2>&1; then \
+		echo "$(YELLOW)Testing Kawa Web (Flutter) project...$(NC)"; \
+		if [ ! -d "$(KAWA_WEB_DIR)" ]; then \
+			echo "$(RED)✗ kawa_web directory not found$(NC)"; \
+			exit 1; \
+		fi; \
+		cd $(KAWA_WEB_DIR) && flutter test || { echo "$(RED)✗ Kawa Web tests failed$(NC)"; exit 1; }; \
+		echo "$(GREEN)✓ Kawa Web tests passed$(NC)"; \
+	else \
+		echo "$(YELLOW)Flutter not available - skipping Flutter tests$(NC)"; \
+	fi
+	@echo ""
+	@echo "$(GREEN)🎉 All available tests passed successfully!$(NC)"
 
 extract-port-from-log: ## Helper to extract port from log file
 	@grep -o "http://[^[:space:]]*" $(1) 2>/dev/null | head -1 || \
@@ -206,49 +263,62 @@ setup-kawa-web-env: ## Setup environment file for kawa_web with dynamic kawa URL
 		exit 1; \
 	fi
 
-build-kawa-web: setup-kawa-web-env ## Build kawa_web Flutter project
-	@echo "$(YELLOW)Building kawa_web Flutter project...$(NC)"
+build-kawa-web: setup-kawa-web-env ## Build kawa_web project (Flutter if available, otherwise use pre-built)
+	@echo "$(YELLOW)Setting up kawa_web...$(NC)"
 	@if [ ! -d "$(KAWA_WEB_DIR)" ]; then \
 		echo "$(RED)✗ kawa_web directory not found$(NC)"; \
 		$(MAKE) stop-all; \
 		exit 1; \
 	fi
-	@cd $(KAWA_WEB_DIR) && flutter pub get
-	@cd $(KAWA_WEB_DIR) && flutter build web
-	@echo "$(GREEN)✓ kawa_web built successfully$(NC)"
-
-run-kawa-web: build-kawa-web ## Start kawa_web Flutter server
-	@echo "$(YELLOW)Starting kawa_web server...$(NC)"
-	@cd $(KAWA_WEB_DIR) && flutter run -d web-server --web-hostname=0.0.0.0 > ../kawa_web.log 2>&1 &
-	@KAWA_WEB_PID=$$!; \
-	echo $$KAWA_WEB_PID >> $(PIDS_FILE); \
-	echo "$(BLUE)Waiting for kawa_web to start...$(NC)"; \
-	KAWA_WEB_URL=""; \
-	for i in $$(seq 1 60); do \
-		if [ -f kawa_web.log ]; then \
-			KAWA_WEB_URL=$$(grep -oE "https?://[^[:space:]]*|localhost:[0-9]+" kawa_web.log 2>/dev/null | head -1); \
-			if [ -z "$$KAWA_WEB_URL" ]; then \
-				KAWA_WEB_PORT=$$(grep -oE ":[0-9]+" kawa_web.log 2>/dev/null | head -1 | sed 's/://'); \
-				if [ ! -z "$$KAWA_WEB_PORT" ]; then \
-					KAWA_WEB_URL="http://localhost:$$KAWA_WEB_PORT"; \
-				fi; \
-			fi; \
-			if [ ! -z "$$KAWA_WEB_URL" ]; then \
-				if curl -s $$KAWA_WEB_URL >/dev/null 2>&1; then \
-					echo "$(GREEN)✓ kawa_web is ready at $$KAWA_WEB_URL$(NC)"; \
-					echo "kawa_web|$$KAWA_WEB_URL" >> $(SERVICE_INFO_FILE); \
-					break; \
-				fi; \
-			fi; \
+	@if command -v flutter >/dev/null 2>&1; then \
+		echo "$(BLUE)Flutter found - building web project$(NC)"; \
+		echo "$(BLUE)Resolving dependencies...$(NC)"; \
+		cd $(KAWA_WEB_DIR) && flutter pub get && \
+		echo "$(BLUE)Building web project...$(NC)" && \
+		flutter build web; \
+		echo "$(GREEN)✓ kawa_web built successfully$(NC)"; \
+	else \
+		echo "$(YELLOW)Flutter not found - checking for pre-built files$(NC)"; \
+		if [ ! -d "$(KAWA_WEB_DIR)/build/web" ]; then \
+			echo "$(RED)✗ No pre-built files found in $(KAWA_WEB_DIR)/build/web$(NC)"; \
+			echo "$(RED)✗ Either install Flutter or provide pre-built web files$(NC)"; \
+			$(MAKE) stop-all; \
+			exit 1; \
 		fi; \
-		if [ $$i -eq 60 ]; then \
-			echo "$(RED)✗ kawa_web failed to start$(NC)"; \
+		echo "$(GREEN)✓ Using pre-built web files$(NC)"; \
+	fi
+
+run-kawa-web: build-kawa-web ## Start kawa_web using Python HTTP server
+	@echo "$(YELLOW)Starting kawa_web server...$(NC)"
+	@if [ ! -d "$(KAWA_WEB_DIR)/build/web" ]; then \
+		echo "$(RED)✗ build/web directory not found$(NC)"; \
+		$(MAKE) stop-all; \
+		exit 1; \
+	fi
+	@echo "$(BLUE)Starting Python HTTP server on port 8000$(NC)"
+	@if command -v python3 >/dev/null 2>&1; then \
+		cd $(KAWA_WEB_DIR)/build/web && python3 -m http.server 8000 > ../../../kawa_web.log 2>&1 & \
+	else \
+		cd $(KAWA_WEB_DIR)/build/web && python -m http.server 8000 > ../../../kawa_web.log 2>&1 & \
+	fi; \
+	KAWA_WEB_PID=$$!; \
+	echo $$KAWA_WEB_PID >> $(PIDS_FILE); \
+	echo "$(BLUE)Waiting for kawa_web HTTP server to start...$(NC)"; \
+	KAWA_WEB_URL="http://127.0.0.1:8000"; \
+	for i in $$(seq 1 30); do \
+		if curl -s $$KAWA_WEB_URL >/dev/null 2>&1; then \
+			echo "$(GREEN)✓ kawa_web is ready at $$KAWA_WEB_URL$(NC)"; \
+			echo "kawa_web|$$KAWA_WEB_URL" >> $(SERVICE_INFO_FILE); \
+			break; \
+		fi; \
+		if [ $$i -eq 30 ]; then \
+			echo "$(RED)✗ kawa_web HTTP server failed to start$(NC)"; \
 			echo "$(YELLOW)Kawa_web log:$(NC)"; \
 			tail -10 kawa_web.log 2>/dev/null || echo "No log available"; \
 			$(MAKE) stop-all; \
 			exit 1; \
 		fi; \
-		sleep 2; \
+		sleep 1; \
 	done
 
 show-status: ## Show running services status table
@@ -304,7 +374,8 @@ stop-all: ## Stop all running projects by killing processes on ports from servic
 	fi
 	@pkill -f "code-server --auth none" 2>/dev/null || true
 	@pkill -f "go run . serve" 2>/dev/null || true
-	@pkill -f "flutter run -d web-server" 2>/dev/null || true
+	@pkill -f "python.*http.server 8000" 2>/dev/null || true
+	@pkill -f "python3.*http.server 8000" 2>/dev/null || true
 	@rm -f $(SERVICE_INFO_FILE)
 	@echo "$(GREEN)✓ All projects stopped$(NC)"
 

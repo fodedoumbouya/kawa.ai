@@ -1,9 +1,10 @@
 package downloadhandler
 
 import (
-	download "go_manager/internal/download"
-	pbdbutil "go_manager/internal/pbDbUtil"
 	"net/http"
+
+	download "github.com/fodedoumbouya/kawa.ai/internal/download"
+	pbdbutil "github.com/fodedoumbouya/kawa.ai/internal/pbDbUtil"
 
 	"github.com/pocketbase/pocketbase/core"
 )

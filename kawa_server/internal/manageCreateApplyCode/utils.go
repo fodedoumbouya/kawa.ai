@@ -3,11 +3,12 @@ package managecreateapplycode
 import (
 	"encoding/json"
 	"fmt"
-	"go_manager/internal/action"
-	directory_utils "go_manager/internal/directory"
-	"go_manager/internal/llm"
-	app_model "go_manager/internal/model"
 	"strings"
+
+	"github.com/fodedoumbouya/kawa.ai/internal/action"
+	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
+	"github.com/fodedoumbouya/kawa.ai/internal/llm"
+	app_model "github.com/fodedoumbouya/kawa.ai/internal/model"
 )
 
 // / This function is used to get the navigation flow of the app

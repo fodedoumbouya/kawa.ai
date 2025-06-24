@@ -1,8 +1,9 @@
-package referenceshandler
+package references
 
 import (
-	"go_manager/internal/references"
 	"net/http"
+
+	"github.com/fodedoumbouya/kawa.ai/internal/references"
 
 	"github.com/pocketbase/pocketbase/core"
 )

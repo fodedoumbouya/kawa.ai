@@ -3,17 +3,18 @@ package projectplan
 import (
 	"encoding/json"
 	"fmt"
-	llm "go_manager/internal/llm"
-	mfs "go_manager/internal/manageCreateApplyCode"
-	pbdbutil "go_manager/internal/pbDbUtil"
-	"go_manager/internal/utility"
 	"net/http"
 	"strconv"
 	"strings"
 
-	app_model "go_manager/internal/model"
+	llm "github.com/fodedoumbouya/kawa.ai/internal/llm"
+	mfs "github.com/fodedoumbouya/kawa.ai/internal/manageCreateApplyCode"
+	pbdbutil "github.com/fodedoumbouya/kawa.ai/internal/pbDbUtil"
+	"github.com/fodedoumbouya/kawa.ai/internal/utility"
 
-	projectProgess "go_manager/internal/projectProgressState"
+	app_model "github.com/fodedoumbouya/kawa.ai/internal/model"
+
+	projectProgess "github.com/fodedoumbouya/kawa.ai/internal/projectProgressState"
 
 	"github.com/pocketbase/pocketbase/core"
 )

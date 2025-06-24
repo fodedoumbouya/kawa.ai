@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	"go_manager/api/handler"
-	reload "go_manager/internal/hotRestartChannel"
-	projectProgess "go_manager/internal/projectProgressState"
+	"github.com/fodedoumbouya/kawa.ai/api/handler"
+	reload "github.com/fodedoumbouya/kawa.ai/internal/hotRestartChannel"
+	projectProgess "github.com/fodedoumbouya/kawa.ai/internal/projectProgressState"
 
 	"github.com/joho/godotenv"
 	"github.com/pocketbase/pocketbase"

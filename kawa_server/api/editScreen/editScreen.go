@@ -3,10 +3,11 @@ package editscreen
 import (
 	"encoding/json"
 	"fmt"
-	"go_manager/internal/llm"
-	managecreateapplycode "go_manager/internal/manageCreateApplyCode"
-	"go_manager/internal/model"
 	"net/http"
+
+	"github.com/fodedoumbouya/kawa.ai/internal/llm"
+	managecreateapplycode "github.com/fodedoumbouya/kawa.ai/internal/manageCreateApplyCode"
+	"github.com/fodedoumbouya/kawa.ai/internal/model"
 
 	"github.com/pocketbase/pocketbase/core"
 )

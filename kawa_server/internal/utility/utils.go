@@ -3,13 +3,14 @@ package utility
 import (
 	"bufio"
 	"fmt"
-	directory_utils "go_manager/internal/directory"
 	"net/http"
 	"os"
 	"os/exec"
 	"regexp"
 	"strings"
 	"time"
+
+	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 )
 
 // Updated helper function to check app usage

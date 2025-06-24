@@ -5,9 +5,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"go_manager/internal/utility"
 	"net/http"
 	"os"
+
+	"github.com/fodedoumbouya/kawa.ai/internal/utility"
 )
 
 // Define the structure of the request body

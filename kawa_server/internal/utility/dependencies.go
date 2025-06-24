@@ -2,11 +2,12 @@ package utility
 
 import (
 	"fmt"
-	"go_manager/internal/directory"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/fodedoumbouya/kawa.ai/internal/directory"
 
 	"gopkg.in/yaml.v2"
 )

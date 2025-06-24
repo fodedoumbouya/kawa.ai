@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	directory_utils "go_manager/internal/directory"
+	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 
 	"github.com/pocketbase/pocketbase/core"
 )

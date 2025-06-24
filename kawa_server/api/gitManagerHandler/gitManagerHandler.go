@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	git "go_manager/internal/gitManager"
+	git "github.com/fodedoumbouya/kawa.ai/internal/gitManager"
 
 	"github.com/pocketbase/pocketbase/core"
 )

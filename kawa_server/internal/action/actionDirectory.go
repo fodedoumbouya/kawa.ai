@@ -3,11 +3,12 @@ package action
 import (
 	"encoding/json"
 	"fmt"
-	directory_utils "go_manager/internal/directory"
-	app_model "go_manager/internal/model"
-	"go_manager/internal/utility"
 	"os"
 	"path/filepath"
+
+	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
+	app_model "github.com/fodedoumbouya/kawa.ai/internal/model"
+	"github.com/fodedoumbouya/kawa.ai/internal/utility"
 )
 
 func parseFileStructure(jsonResponse string) (*app_model.ResponseFrontCode, error) {

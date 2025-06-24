@@ -2,9 +2,10 @@ package utility
 
 import (
 	"fmt"
-	directory_utils "go_manager/internal/directory"
 	"os"
 	"path/filepath"
+
+	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 )
 
 func ReadSingleMarkdownFile(filename string) (string, error) {

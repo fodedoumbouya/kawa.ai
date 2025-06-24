@@ -3,8 +3,9 @@ package llm
 import (
 	"context"
 	"fmt"
-	"go_manager/internal/utility"
 	"strings"
+
+	"github.com/fodedoumbouya/kawa.ai/internal/utility"
 
 	"github.com/google/generative-ai-go/genai"
 	"google.golang.org/api/option"

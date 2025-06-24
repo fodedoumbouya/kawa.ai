@@ -3,11 +3,12 @@ package download
 import (
 	"archive/zip"
 	"fmt"
-	directory_utils "go_manager/internal/directory"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 
 	"github.com/pocketbase/pocketbase/core"
 )

@@ -1,4 +1,4 @@
-module go_manager
+module github.com/fodedoumbouya/kawa.ai
 
 go 1.23.0
 

@@ -1,7 +1,7 @@
 package config
 
 import (
-	config "go_manager/internal/config"
+	config "github.com/fodedoumbouya/kawa.ai/internal/config"
 
 	"github.com/pocketbase/pocketbase/core"
 )

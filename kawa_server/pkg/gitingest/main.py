@@ -1,8 +1,7 @@
 
 # Synchronous usage
 import sys
-import time
-from gitingest import ingest
+from gitingest import ingest  # type: ignore
 
 url = sys.argv[1]
 

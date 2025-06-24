@@ -2,11 +2,12 @@ package gitmanager
 
 import (
 	"fmt"
-	directory_utils "go_manager/internal/directory"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 )
 
 type GitManager struct {

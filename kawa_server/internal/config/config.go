@@ -1,7 +1,7 @@
 package config
 
 import (
-	llm "go_manager/internal/llm"
+	llm "github.com/fodedoumbouya/kawa.ai/internal/llm"
 )
 
 type APISettingReponse struct {
