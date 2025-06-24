@@ -18,7 +18,7 @@ The Kawa.ai lifecycle follows a series of structured steps from initial user pro
 
 ### 🧾 1. Request Creation (Project Planning)
 
-Users start by describing their app idea in **natural language** via the Kawa web interface. This request is enriched by a **system prompt** defined in [`prompts/project_plan.md`](prompts/project_plan.md) and sent to the LLM.
+Users start by describing their app idea in **natural language** via the Kawa web interface. This request is enriched by a **system prompt** defined in [`prompts/project_plan.md`](../prompts/project_plan.md) and sent to the LLM.
 
 The result is a **comprehensive project plan**, returned in a structured JSON format like:
 
@@ -63,7 +63,7 @@ The result is a **comprehensive project plan**, returned in a structured JSON fo
 
 Once the plan is received, Kawa:
 
-1. Sends two additional prompts [`project_structure.md`](prompts/project_structure.md) and [`project_files.md`](prompts/project_files.md) to the LLM to generate the folder structure and necessary source files.
+1. Sends two additional prompts for the LLM to generate the folder structure and necessary source files.
 2. Initializes a Git repository to **track file changes and support version control**.
 3. Launches the project using local runtime services and returns the **preview URL** to the user.
 
