@@ -37,12 +37,14 @@ To get started with Kawa.ai, follow these steps:
 	make run-all
 	```
 
+
 This command will check for the required dependencies and start all the services. If everything is set up correctly, you should see the following services running with their respective ports:
-	| PROJECT         | URL                          | STATUS      |
-	|-----------------|------------------------------|-------------|
-	| vscode_preview  | http://127.0.0.1:8080        | ✓ Running   |
-	| kawa            | http://127.0.0.1:8090        | ✓ Running   |
-	| kawa_web        | http://127.0.0.1:8000          | ✓ Running   |
+   | PROJECT         | URL                          | STATUS      |
+   |-----------------|------------------------------|-------------|
+   | vscode_preview  | http://127.0.0.1:8080        | ✓ Running   |
+   | kawa            | http://127.0.0.1:8090        | ✓ Running   |
+   | kawa_web        | http://127.0.0.1:8000        | ✓ Running   |
+   
 
 ## Usage 🔍
 Once Kawa.ai is installed, you can start creating applications using the web interface. Follow these steps to get started:
@@ -64,7 +66,7 @@ Kawa.ai is designed with a modular and scalable architecture that ensures each r
 - **Scalability**: Independent requests make it easier to scale applications horizontally, as there is no need to maintain state across requests.
 - **Flexibility**: You can seamlessly switch between different LLM models within the same project, enabling diverse use cases and experimentation.
 
-For more detailed information on our approach, please refer to our Approach Documentation.
+For more detailed information on our approach, please refer to our [Approach Documentation](approach.md).
 
 ## Contributing 🌟
 We welcome contributions from the community! If you have ideas, suggestions, or improvements, please follow these steps:
