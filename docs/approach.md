@@ -121,11 +121,11 @@ This design philosophy  **self-contained LLM requests**  is key to Kawa’s robu
 
 ## 📚 Further Reading
 check the prompts directory for more details on how Kawa.ai uses LLMs to generate and edit projects:
-- [Project Planning](prompts/project_plan.md) - How Kawa generates a comprehensive project plan from user input.
-- [Navigation Flow](prompts/navigation_flow.md) - How Kawa structures app navigation flow.
-- [Project Structure](prompts/structure.md) - How Kawa defines the folder structure, file organization and initial files.
-- [Code Planning](prompts/code_planner.md) - How Kawa prepares the code structure and logic for each screen.
-- [Code Generation](prompts/coder.md) - How Kawa generates the actual Flutter code.
+- [Project Planning](../prompts/project_plan.md) - How Kawa generates a comprehensive project plan from user input.
+- [Navigation Flow](../prompts/navigation_flow.md) - How Kawa structures app navigation flow.
+- [Project Structure](../prompts/structure.md) - How Kawa defines the folder structure, file organization and initial files.
+- [Code Planning](../prompts/code_planner.md) - How Kawa prepares the code structure and logic for each screen.
+- [Code Generation](../prompts/coder.md) - How Kawa generates the actual Flutter code.
 ---
 
 ## 🙌 Summary
