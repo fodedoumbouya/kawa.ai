@@ -13,9 +13,9 @@ import (
 
 // / This function is used to get the navigation flow of the app
 // / It takes a list of screens as input and returns the navigation flow of the app
-// / calling the LLM to get the navigation flow with 'AGENT_1_4(NAVIGATION)' instruction
+// / calling the LLM to get the navigation flow with 'navigation' instruction
 func getAppNavigationFlow(screens []string, apiKey, modelName string, llmType llm.LlmType) (app_model.AppNavigationModel, error) {
-	// appNavInstruction, _ := utility.ReadSingleMarkdownFile("AGENT_1_4(NAVIGATION)")
+	// appNavInstruction, _ := utility.ReadSingleMarkdownFile("navigation")
 	appNavigation, err := llm.RequestToLLM(
 
 		llm.RequestLLMArguments{

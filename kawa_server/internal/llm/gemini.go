@@ -12,33 +12,13 @@ import (
 )
 
 var ctx = context.Background()
-var llmModelName = "gemini-2.0-flash-exp" //"gemini-exp-1206" //"gemini-2.0-flash-exp"
-// var llmModelName2 = "gemini-2.0-flash-exp"
-//  "gemini-2.0-flash-exp"
-//  "gemini-1.5-flash"
-
-var chatSessionProductManager *genai.ChatSession
-
-// var modelProductManager *genai.GenerativeModel
-
-// func initGemini() {
-// 	var clientPorductManager, err1 = genai.NewClient(ctx, option.WithAPIKey(os.Getenv("GEMINI_API_KEY")))
-// 	instructionStructureProject, _ := utility.ReadSingleMarkdownFile("AGENT_1_(Product Manager)_No_Backend")
-// 	if err1 != nil {
-// 		fmt.Println("Error creating client: ", err1)
-// 	} else {
-// 		modelProductManager = clientPorductManager.GenerativeModel(llmModelName)
-// 		chatSessionProductManager = modelProductManager.StartChat()
-// 		saveHistory(chatSessionProductManager, instructionStructureProject, `{"status": "ok"}`)
-// 	}
-// }
 
 func GeminiPlanManager(llmArg RequestLLMArguments) (string, error) {
 	client, err := genai.NewClient(ctx, option.WithAPIKey(llmArg.APIKey))
 	if err != nil {
 		return "", err
 	}
-	clientModel := client.GenerativeModel(llmModelName).StartChat()
+	clientModel := client.GenerativeModel(llmArg.ModelName).StartChat()
 
 	instructionPrompt, err := utility.ReadSingleMarkdownFile(llmArg.Instruction)
 	if err != nil {

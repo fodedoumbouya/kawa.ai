@@ -20,11 +20,11 @@ repos:
         args: 
           - -c
           - |
-            if [ ! -d "prompt" ]; then 
+            if [ ! -d "prompts" ]; then 
               echo "Error: prompt directory does not exist"
               exit 1
             fi
-            if [ -z "$(ls -A prompt 2>/dev/null)" ]; then 
+            if [ -z "$(ls -A prompts 2>/dev/null)" ]; then 
               echo "Error: prompt directory is empty"
               exit 1
             fi

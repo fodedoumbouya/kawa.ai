@@ -49,7 +49,6 @@ func EditScreenHandler(c *core.RequestEvent) error {
 	var projectPlan model.AppPlan
 	err = json.Unmarshal([]byte(project.GetString("projectStructure")), &projectPlan)
 	if err != nil {
-		// c.JSON(500, gin.H{"error": err.Error()})
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
@@ -60,7 +59,6 @@ func EditScreenHandler(c *core.RequestEvent) error {
 		0,
 	)
 	if err != nil {
-		// c.JSON(500, gin.H{"error": err.Error()})
 		fmt.Println("Error getting chat record: ", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
@@ -69,7 +67,6 @@ func EditScreenHandler(c *core.RequestEvent) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Chat not found"})
 	}
 	chat := chatRecord[0]
-	// fmt.Println("Chat:", chat)
 	collectionMsg, err := c.App.FindCollectionByNameOrId("message")
 	if err != nil {
 		// c.JSON(500, gin.H{"error": err.Error()})

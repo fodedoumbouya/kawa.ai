@@ -66,7 +66,7 @@ Kawa.ai is designed with a modular and scalable architecture that ensures each r
 - **Scalability**: Independent requests make it easier to scale applications horizontally, as there is no need to maintain state across requests.
 - **Flexibility**: You can seamlessly switch between different LLM models within the same project, enabling diverse use cases and experimentation.
 
-For more detailed information on our approach, please refer to our [Approach Documentation](approach.md).
+For more detailed information on our approach, please refer to our [Approach Documentation](docs/approach.md).
 
 ## Contributing 🌟
 We welcome contributions from the community! If you have ideas, suggestions, or improvements, please follow these steps:

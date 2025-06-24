@@ -16,7 +16,7 @@ func ReadSingleMarkdownFile(filename string) (string, error) {
 		fmt.Println("error getting current directory:", err)
 		return "", fmt.Errorf("error getting current directory: %v", err)
 	}
-	projectDir += "/prompt"
+	projectDir += "/prompts"
 	filename = fmt.Sprintf("%s.md", filename)
 	// Construct the full path to the file
 	filePath := filepath.Join(projectDir, filename)

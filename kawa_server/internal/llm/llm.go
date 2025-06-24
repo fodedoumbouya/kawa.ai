@@ -13,12 +13,12 @@ const (
 // type LlmInstruction string
 
 const (
-	AGENT_1_Product_Manager_No_Backend string = "AGENT_1_(Product Manager)_No_Backend"
-	AGENT_1_4_NAVIGATION               string = "AGENT_1_4(NAVIGATION)"
-	AGENT_1_5_CREATESTRUCTURE_v2       string = "AGENT_1_5(CREATESTRUCTURE)_v2"
-	AGENT_Create_Navigation            string = "AGENT_Create_Navigation"
-	AGENT_3_Planning_For_Coder         string = "AGENT_3_Planning_For_Coder"
-	AGENT_4_Coding                     string = "AGENT_4_Coding"
+	AGENT_1_Product_Manager_No_Backend string = "project_plan"
+	AGENT_1_4_NAVIGATION               string = "navigation_flow"
+	AGENT_1_5_CREATESTRUCTURE_v2       string = "structure"
+	AGENT_Create_Navigation            string = "routers"
+	AGENT_3_Planning_For_Coder         string = "code_planner"
+	AGENT_4_Coding                     string = "coder"
 )
 
 const (
