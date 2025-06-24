@@ -1,0 +1,93 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=15000']  # max file size 15MB
+      - id: check-merge-conflict
+      - id: mixed-line-ending
+
+  # Golang hooks
+  - repo: https://github.com/dnephin/pre-commit-golang
+    rev: v0.5.1
+    hooks:
+      - id: go-fmt
+      - id: go-vet-mod
+      - id: go-mod-tidy
+      - id: go-unit-tests
+      - id: golangci-lint
+
+  - repo: local
+    hooks:
+      # Check for prompt directory existence
+      - id: check-prompt-directory
+        name: Check if prompt directory exists
+        description: Verify that the prompt directory exists and contains files
+        entry: bash
+        args: 
+          - -c
+          - |
+            if [ ! -d "prompt" ]; then 
+              echo "Error: prompt directory does not exist"
+              exit 1
+            fi
+            if [ -z "$(ls -A prompt 2>/dev/null)" ]; then 
+              echo "Error: prompt directory is empty"
+              exit 1
+            fi
+            echo "✓ Prompt directory exists and contains files"
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      # Dart formatting
+      - id: dart-format
+        name: Format Dart code
+        description: This hook runs dart format on all Dart files.
+        entry: dart format .
+        language: system
+        types: [dart]
+
+      # Flutter pubspec check
+      - id: pubspec-check-kawa_web
+        name: Check pubspec.yaml format for kawa_web
+        description: This hook checks if the pubspec.yaml file is formatted correctly for kawa_web.
+        entry: bash
+        args:
+          - -c
+          - 'cd "$(git rev-parse --show-toplevel)" && cd kawa_web && flutter clean && flutter pub get'
+        language: system
+        files: ^kawa_web/pubspec\.yaml$
+
+      # Go specific checks for kawa_server
+      - id: go-fmt-kawa-server
+        name: Format Go code in kawa_server
+        description: Run go fmt on Go files in kawa_server directory
+        entry: bash
+        args:
+          - -c
+          - 'cd kawa_server && go fmt ./...'
+        language: system
+        files: ^kawa_server/.*\.go$
+
+      - id: go-vet-kawa-server
+        name: Go vet for kawa_server
+        description: Run go vet on kawa_server directory
+        entry: bash
+        args:
+          - -c
+          - 'cd kawa_server && go vet ./...'
+        language: system
+        files: ^kawa_server/.*\.go$
+
+      - id: go-mod-tidy-kawa-server
+        name: Go mod tidy for kawa_server
+        description: Run go mod tidy on kawa_server directory
+        entry: bash
+        args:
+          - -c
+          - 'cd kawa_server && go mod tidy'
+        language: system
+        files: ^kawa_server/(go\.mod|go\.sum|.*\.go)$
+
