@@ -17,7 +17,7 @@ type GitManager struct {
 // NewGitManager creates a new git manager for the specified project directory
 func NewGitManager(projectName, projectId string) (*GitManager, error) {
 	projectName = projectName + "_" + projectId
-	rootDir, err := directory_utils.FindRootDir("go_manage")
+	rootDir, err := directory_utils.FindRootDir("kawa_server")
 	if err != nil {
 		return nil, fmt.Errorf("failed to find root directory: %v", err)
 	}

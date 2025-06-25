@@ -33,7 +33,7 @@ func parseFileStructure(jsonResponse string) (*app_model.ResponseFrontCode, erro
 func ApplyModifyAction(jsonData string, projectName, projectId string) error {
 	projectName = projectName + "_" + projectId
 
-	rootDir, err := directory_utils.FindRootDir("go_manage")
+	rootDir, err := directory_utils.FindRootDir("kawa_server")
 	if err != nil {
 		return err
 	}

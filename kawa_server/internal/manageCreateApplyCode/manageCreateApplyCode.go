@@ -135,6 +135,7 @@ func CreateProjectStructure(project app_model.AppPlan, c *core.RequestEvent) (st
 	if err = setupFlutterProject(project.AppName, recordProject.Id, nav); err != nil {
 		projectProgess.SendProjectProgress(userRecord.BaseModel.Id, projectProgess.FailedToCreateFlutterProject)
 		c.App.Delete(recordProject)
+		utility.DeleteFolder(project.AppName, recordProject.Id)
 
 		return "", "", fmt.Errorf("flutter project setup failed: %w", err)
 	}
@@ -143,6 +144,7 @@ func CreateProjectStructure(project app_model.AppPlan, c *core.RequestEvent) (st
 	if err = buildNavigation(nav, project.AppName, recordProject.Id); err != nil {
 		projectProgess.SendProjectProgress(userRecord.BaseModel.Id, projectProgess.FailedToCreateProject)
 		c.App.Delete(recordProject)
+		utility.DeleteFolder(project.AppName, recordProject.Id)
 
 		return "", "", fmt.Errorf("navigation build failed: %w", err)
 	}
@@ -152,6 +154,8 @@ func CreateProjectStructure(project app_model.AppPlan, c *core.RequestEvent) (st
 	if err = action.ApplyModifyAction(resp, project.AppName, recordProject.Id); err != nil {
 		projectProgess.SendProjectProgress(userRecord.BaseModel.Id, projectProgess.FailedToCreateProject)
 		c.App.Delete(recordProject)
+
+		utility.DeleteFolder(project.AppName, recordProject.Id)
 		return "", "", fmt.Errorf("code modification failed: %w", err)
 	}
 

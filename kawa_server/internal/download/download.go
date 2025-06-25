@@ -72,7 +72,7 @@ func DownloadHandler(projectName, projectId string, c *core.RequestEvent) error 
 
 	projectName = projectName + "_" + projectId
 
-	rootDir, err := directory_utils.FindRootDir("go_manage")
+	rootDir, err := directory_utils.FindRootDir("kawa_server")
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal Server Error"})
 	}

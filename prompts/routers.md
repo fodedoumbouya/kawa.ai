@@ -91,12 +91,13 @@ class AppNavigator {
     AppRouter.router.pop();
   }
 
+ // I added the `./` because search is a child of home so all child routes should start with `./`
   static void goSearch({required String id}) {
-    AppRouter.router.go(AppRoutes.search(id: id));
+    AppRouter.router.push("./${AppRoutes.search(id: id)}");
   }
 
   static void goLogin() {
-    AppRouter.router.go(AppRoutes.login);
+    AppRouter.router.push(AppRoutes.login);
   }
 
   static void clearAndNavigate(String path) {
@@ -114,7 +115,17 @@ class NotFoundScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Not Found')),
-      body: const Center(child: Text('404 Not Found')),
+      body: const Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('404 - Page Not Found', style: TextStyle(fontSize: 24)),
+          SizedBox(height: 20),
+         Button(
+            onPressed: () => AppNavigator.goBack(),
+            child: Text('Go to Back', style: TextStyle(fontSize: 18)),
+          ),
+        ],
+      )),
     );
   }
 }

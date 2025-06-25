@@ -23,6 +23,8 @@ class CreatingProjectListener {
   static Completer<void>? _initCompleter;
 
   static Future<void> init() async {
+    final user = DataPersistence.getAccount();
+    if (user == null) return; // User must be logged in to initialize
     // If already initialized, return immediately
     if (_webSocket != null) {
       return;

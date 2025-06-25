@@ -157,7 +157,7 @@ func EditScreen(project model.AppPlan, currentScreen string, prompt string, reco
 }
 
 func getPackageDetailInfo(githubURL string) string {
-	gitingestScript, err := directory_utils.FindRootDir("go_manage")
+	gitingestScript, err := directory_utils.FindRootDir("kawa_server")
 	if err != nil {
 		fmt.Println("Error finding root directory:", err)
 		return ""

@@ -25,7 +25,7 @@ class Root extends ConsumerWidget {
             title: "Kawa.ai",
             theme: KTheme.lightTheme(),
             darkTheme: KTheme.dartTheme(),
-            // themeMode: themeState.themeMode,
+            themeMode: ThemeMode.system,
             debugShowCheckedModeBanner: false,
             routeInformationProvider: AppRouter.router.routeInformationProvider,
             routeInformationParser: AppRouter.router.routeInformationParser,
@@ -36,7 +36,6 @@ class Root extends ConsumerWidget {
               DefaultCupertinoLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-
             builder: (context, child) {
               final childWithToast = Toast(
                   navigatorKey: AppRouter.navigatorKey,

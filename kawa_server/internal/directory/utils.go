@@ -77,7 +77,7 @@ func buildDirTree(path string) (DirEntry, error) {
 
 func GetDirectory(projectName, projectId string) (DirEntry, error) {
 	projectName = projectName + "_" + projectId
-	rootDir, err := FindRootDir("go_manage")
+	rootDir, err := FindRootDir("kawa_server")
 	if err != nil {
 		return DirEntry{}, err
 	}

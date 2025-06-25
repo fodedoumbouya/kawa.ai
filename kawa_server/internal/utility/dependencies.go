@@ -22,7 +22,7 @@ type PubSpec struct {
 
 func GetDependenciesList(projectName, projectId string) ([]string, error) {
 	projectName = projectName + "_" + projectId
-	filePath, err := directory.FindRootDir("go_manage")
+	filePath, err := directory.FindRootDir("kawa_server")
 	if err != nil {
 		fmt.Println("Error finding root directory: ", err)
 		return []string{}, err
@@ -54,7 +54,7 @@ func GetDependenciesList(projectName, projectId string) ([]string, error) {
 
 func InstallDependency(dependencyName string, projectName, projectId string) error {
 	projectName = projectName + "_" + projectId
-	rootDir, err := directory.FindRootDir("go_manage")
+	rootDir, err := directory.FindRootDir("kawa_server")
 	if err != nil {
 		fmt.Println("Error finding root directory: ", err)
 		return err
@@ -82,7 +82,7 @@ func InstallDependency(dependencyName string, projectName, projectId string) err
 
 func ReadFileFromLib(pathFromLib string, projectName, projectId string) (string, error) {
 	projectName = projectName + "_" + projectId
-	filePath, err := directory.FindRootDir("go_manage")
+	filePath, err := directory.FindRootDir("kawa_server")
 	if err != nil {
 		fmt.Println("Error finding root directory: ", err)
 		return "", err

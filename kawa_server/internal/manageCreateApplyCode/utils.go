@@ -122,7 +122,7 @@ var firstStructure = app_model.DirEntryStructure{
 
 func buildNavigation(navScreen app_model.File, projectName, projectId string) error {
 	projectName = projectName + "_" + projectId
-	rootDir, err := directory_utils.FindRootDir("go_manage")
+	rootDir, err := directory_utils.FindRootDir("kawa_server")
 	if err != nil {
 		return err
 	}

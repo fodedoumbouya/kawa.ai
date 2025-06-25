@@ -9,7 +9,7 @@ class AppNavigator {
   AppNavigator._();
 
   static void goHome() {
-    AppRouter.router.go(AppRoutes.home);
+    AppRouter.router.push(AppRoutes.home);
   }
 
   static void goBack() {
@@ -17,11 +17,11 @@ class AppNavigator {
   }
 
   static void goSearch({required String id}) {
-    AppRouter.router.go(AppRoutes.search(id: id));
+    AppRouter.router.push(AppRoutes.search(id: id));
   }
 
   static void goLogin() {
-    AppRouter.router.go(AppRoutes.login);
+    AppRouter.router.push(AppRoutes.login);
   }
 
   static void clearAndNavigate(String path) {
@@ -35,7 +35,7 @@ class AppNavigator {
 so if you want to navigate to home screen then you can use `AppNavigator.goHome();` and if you want to navigate to search screen then you can use `AppNavigator.goSearch(id: '0');` and so on.
 if you don't find the screen in the navigation then ignore it. and if you find the screen in the navigation then you have to create the screen file and add the navigation logic to it.
 
-- **Step 2:** Update the main.dart file to include the router and set up the app.
+- **Step 2:** Update the main.dart file to include the router and set up the app and the main() must be exactly like this and change only the App Name.
 ```dart
 import 'package:flutter_web_plugins/url_strategy.dart';
 

@@ -23,7 +23,7 @@ func GetVscodeUrl(c *core.RequestEvent) error {
 
 	projectName := project.GetString("projectName") + "_" + projectId
 
-	rootDir, err := directory_utils.FindRootDir("go_manage")
+	rootDir, err := directory_utils.FindRootDir("kawa_server")
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, fmt.Sprintf("Error finding root directory: %v", err))
 	}

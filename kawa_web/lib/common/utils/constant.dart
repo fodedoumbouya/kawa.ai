@@ -11,8 +11,5 @@ class KConstant {
 
   static String serverHost = dotenv.get("SERVER_HOST", fallback: "");
 
-  // static String codePreviewUrl =
-  // "http://$serverHost/?folder=/Users/fodedoumbouya/devCode/flutterCode/kawa.ai/go_manage/third_party/";
-
   static String downloadUrl = "http://$serverHost/api/download";
 }

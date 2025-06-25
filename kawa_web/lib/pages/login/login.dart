@@ -3,6 +3,7 @@ import 'package:kawa_web/base/baseStateNotifier.dart';
 import 'package:kawa_web/base/baseWidget.dart';
 import 'package:kawa_web/base/repo/user/logic.dart';
 import 'package:kawa_web/common/router/appNavigator.dart';
+import 'package:kawa_web/common/router/appRoutes.dart';
 import 'package:kawa_web/common/utils/style/colors.dart';
 import 'package:kawa_web/core/creatingProjectListener/creatingProjectListener.dart';
 import 'package:kawa_web/core/userManagement/userManagement.dart';
@@ -40,10 +41,10 @@ class _LoginState extends BaseWidgetState<Login> {
     if (resp != null) {
       CoreToast.showSuccess("User logged in successfully");
       (userProvider.getFunction(ref) as UserNotifier).setUser(resp);
-      await Future.delayed(const Duration(seconds: 1));
       CreatingProjectListener.instance.initialize();
+      await Future.delayed(const Duration(seconds: 1));
 
-      AppNavigator.goHome();
+      AppNavigator.clearAndNavigate(AppRoutes.home);
     }
   }
 

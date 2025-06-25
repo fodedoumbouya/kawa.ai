@@ -21,7 +21,7 @@ func IsAppInUse(host string) bool {
 }
 
 func DeleteFolder(projectName, projectId string) error {
-	rootDir, err := directory_utils.FindRootDir("go_manage")
+	rootDir, err := directory_utils.FindRootDir("kawa_server")
 	if err != nil {
 		fmt.Println("Error finding the root directory: ", err)
 		return err
@@ -43,7 +43,7 @@ func RunDartApp(projectName, projectId string) (string, int, error) {
 	projectName = projectName + "_" + projectId
 	// Run the command to start the flutter app
 	cmd := exec.Command("dart", "run", "launcher.dart", projectName)
-	rootDir, err := directory_utils.FindRootDir("go_manage")
+	rootDir, err := directory_utils.FindRootDir("kawa_server")
 	if err != nil {
 		fmt.Println("Error finding the root directory: ", err)
 		return "", 0, err
@@ -126,7 +126,7 @@ func extractPort(line string) string {
 // create flutter project
 func CreateFlutterProject(projectName, projectId string) error {
 	projectName = projectName + "_" + projectId
-	rootDir, err := directory_utils.FindRootDir("go_manage")
+	rootDir, err := directory_utils.FindRootDir("kawa_server")
 	if err != nil {
 		fmt.Println("Error finding the root directory: ", err)
 		return err
