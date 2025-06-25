@@ -1,5 +1,6 @@
 # kawa.ai 🚀
 Kawa.ai is a platform for building applications using the power of large language models (LLMs). It provides a simple interface to create, manage, and download applications that leverage LLMs for various tasks. 🤖
+> ⚠️ **Note**:This project is currently under development. We are actively working on features and improvements. Stay tuned ! ⚠️
 
 ## Features ✨
 Kawa.ai offers a comprehensive suite of features to streamline the development and deployment of LLM-powered applications:
@@ -14,9 +15,15 @@ Kawa.ai offers a comprehensive suite of features to streamline the development a
 ## Requirements ✔️
 To install and run Kawa.ai, ensure you have the following dependencies installed on your machine:
 
-- **Golang**: Required for backend services.
+- **Golang**: Required for backend services. 
+  - Version: 1.20 or higher
+  - Installation: Follow the [Golang installation guide](https://golang.org/doc/install).
 - **Python**: Required for certain functionalities and scripts.
+  - Version: 3.8 or higher
+  - Installation: Follow the [Python installation guide](https://www.python.org/downloads/).
 - **Dart & Flutter**: Required for frontend development and editing. (Optional if not editing)
+  - Version: Dart 2.10 or higher, Flutter 2.0 or higher
+  - Installation: Follow the [Dart & Flutter installation guide](https://flutter.dev/docs/get-started/install).
 
 ## Installation 🔧
 To get started with Kawa.ai, follow these steps:
