@@ -4,12 +4,15 @@
 .PHONY: all run-all stop-all clean help setup-env setup test setup-precommit check-precommit
 .DEFAULT_GOAL := help
 
-# Colors for output
+# Detect OS for commands and colors
+UNAME_S := $(shell uname -s)
+
+# Colors for output - Unix-like systems (Linux, macOS) support ANSI colors
 RED = \033[0;31m
 GREEN = \033[0;32m
 YELLOW = \033[1;33m
 BLUE = \033[0;34m
-NC = \033[0m # No Color
+NC = \033[0m
 
 # Project directories
 CODE_SERVER_DIR = vscode_preview
@@ -21,19 +24,16 @@ KAWA_WEB_PORT = 8000
 SERVICE_INFO_FILE = .service_info
 PIDS_FILE = .project_pids
 
-# Detect OS for cross-platform commands
-UNAME_S := $(shell uname -s 2>/dev/null || echo "Windows")
+# OS-specific commands
 ifeq ($(UNAME_S),Linux)
     KILL_PORT_CMD = fuser -k
     FIND_PORT_CMD = netstat -tlnp | grep
+    PYTHON_CMD = python3
 endif
 ifeq ($(UNAME_S),Darwin)
     KILL_PORT_CMD = lsof -ti:
     FIND_PORT_CMD = lsof -i:
-endif
-ifeq ($(UNAME_S),Windows)
-    KILL_PORT_CMD = netstat -ano | findstr
-    FIND_PORT_CMD = netstat -ano | findstr
+    PYTHON_CMD = python3
 endif
 
 help: ## Show this help message
@@ -42,36 +42,88 @@ help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(GREEN)%-15s$(NC) %s\n", $$1, $$2}'
 	@echo ""
 
-check-dependencies: ## Check if required tools are installed
-	@echo "$(YELLOW)Checking dependencies...$(NC)"
-	@command -v code-server >/dev/null 2>&1 || { echo "$(RED)✗ code-server not found$(NC)"; exit 1; }
-	@command -v go >/dev/null 2>&1 || { echo "$(RED)✗ Go not found$(NC)"; exit 1; }
-	@command -v python >/dev/null 2>&1 || command -v python3 >/dev/null 2>&1 || { echo "$(RED)✗ Python not found$(NC)"; exit 1; }
-	@command -v pre-commit >/dev/null 2>&1 || { echo "$(YELLOW)⚠ pre-commit not found - will attempt to install$(NC)"; }
-	@if command -v flutter >/dev/null 2>&1; then \
-		echo "$(GREEN)✓ Flutter found$(NC)"; \
+check-core-dependencies: ## Check if core required tools are installed (Go, Python)
+	@echo "$(YELLOW)Checking core dependencies...$(NC)"
+	@MISSING_DEPS=""; \
+	if ! command -v go >/dev/null 2>&1; then \
+		echo "$(RED)✗ Go not found$(NC)"; \
+		MISSING_DEPS="$$MISSING_DEPS Go"; \
 	else \
-		echo "$(YELLOW)⚠ Flutter not found - will serve pre-built web files$(NC)"; \
+		echo "$(GREEN)✓ Go found: $$(go version)$(NC)"; \
+	fi; \
+	if ! command -v python >/dev/null 2>&1 && ! command -v python3 >/dev/null 2>&1; then \
+		echo "$(RED)✗ Python not found$(NC)"; \
+		MISSING_DEPS="$$MISSING_DEPS Python"; \
+	else \
+		if command -v python3 >/dev/null 2>&1; then \
+			echo "$(GREEN)✓ Python3 found: $$(python3 --version)$(NC)"; \
+		else \
+			echo "$(GREEN)✓ Python found: $$(python --version)$(NC)"; \
+		fi; \
+	fi; \
+	if [ ! -z "$$MISSING_DEPS" ]; then \
+		echo "$(RED)"; \
+		echo "❌ CRITICAL ERROR: Missing required dependencies:$$MISSING_DEPS"; \
+		echo ""; \
+		echo "Please install the missing dependencies:"; \
+		if echo "$$MISSING_DEPS" | grep -q "Go"; then \
+			echo "  🔗 Go: https://golang.org/doc/install"; \
+		fi; \
+		if echo "$$MISSING_DEPS" | grep -q "Python"; then \
+			echo "  🔗 Python: https://www.python.org/downloads/"; \
+		fi; \
+		echo "$(NC)"; \
+		exit 1; \
 	fi
-	@echo "$(GREEN)✓ Required dependencies found$(NC)"
 
-setup: ## Setup all projects (go mod tidy + flutter pub get if available)
+check-optional-dependencies: ## Check optional dependencies (Flutter/Dart)
+	@echo "$(YELLOW)Checking optional dependencies...$(NC)"
+	@if command -v flutter >/dev/null 2>&1; then \
+		echo "$(GREEN)✓ Flutter found: $$(flutter --version | head -1)$(NC)"; \
+		if command -v dart >/dev/null 2>&1; then \
+			echo "$(GREEN)✓ Dart found: $$(dart --version 2>&1 | head -1)$(NC)"; \
+		else \
+			echo "$(YELLOW)⚠ Dart not found separately (included with Flutter)$(NC)"; \
+		fi; \
+	else \
+		echo "$(YELLOW)⚠ Flutter not found$(NC)"; \
+		echo "$(BLUE)  ℹ Flutter is optional - will serve pre-built web files if available$(NC)"; \
+		echo "$(BLUE)  🔗 Install Flutter: https://flutter.dev/docs/get-started/install$(NC)"; \
+	fi
+
+check-dependencies: check-core-dependencies check-optional-dependencies ## Check if required tools are installed
+	@echo "$(YELLOW)Checking additional tools...$(NC)"
+	@if command -v code-server >/dev/null 2>&1; then \
+		echo "$(GREEN)✓ code-server found$(NC)"; \
+	else \
+		echo "$(YELLOW)⚠ code-server not found - installing...$(NC)"; \
+		curl -fsSL https://code-server.dev/install.sh | sh || { echo "$(RED)✗ Failed to install code-server$(NC)"; exit 1; }; \
+		echo "$(GREEN)✓ code-server installed successfully$(NC)"; \
+	fi
+	@if command -v pre-commit >/dev/null 2>&1; then \
+		echo "$(GREEN)✓ pre-commit found$(NC)"; \
+	else \
+		echo "$(YELLOW)⚠ pre-commit not found - installing...$(NC)"; \
+		if command -v pip3 >/dev/null 2>&1; then \
+			pip3 install pre-commit || { echo "$(RED)✗ Failed to install pre-commit with pip3$(NC)"; exit 1; }; \
+		elif command -v pip >/dev/null 2>&1; then \
+			pip install pre-commit || { echo "$(RED)✗ Failed to install pre-commit with pip$(NC)"; exit 1; }; \
+		elif command -v brew >/dev/null 2>&1; then \
+			brew install pre-commit || { echo "$(RED)✗ Failed to install pre-commit with brew$(NC)"; exit 1; }; \
+		else \
+			echo "$(RED)✗ Could not install pre-commit automatically$(NC)"; \
+			echo "$(BLUE)Please install pre-commit manually:$(NC)"; \
+			echo "$(BLUE)  🔗 Visit: https://pre-commit.com/#install$(NC)"; \
+			exit 1; \
+		fi; \
+		echo "$(GREEN)✓ pre-commit installed successfully$(NC)"; \
+	fi
+	@echo "$(GREEN)✓ Dependency check complete$(NC)"
+
+setup: check-dependencies ## Setup all projects (go mod tidy + flutter pub get if available)
 	@echo "$(BLUE)🔧 Setting up all projects...$(NC)"
 	@echo ""
 	@echo "$(YELLOW)Setting up pre-commit hooks...$(NC)"
-	@if ! command -v pre-commit >/dev/null 2>&1; then \
-		echo "$(YELLOW)Installing pre-commit...$(NC)"; \
-		if command -v pip3 >/dev/null 2>&1; then \
-			pip3 install pre-commit; \
-		elif command -v pip >/dev/null 2>&1; then \
-			pip install pre-commit; \
-		elif command -v brew >/dev/null 2>&1; then \
-			brew install pre-commit; \
-		else \
-			echo "$(RED)✗ Could not install pre-commit. Please install manually$(NC)"; \
-			exit 1; \
-		fi; \
-	fi
 	@pre-commit install
 	@pre-commit install --hook-type commit-msg
 	@echo "$(GREEN)✓ Pre-commit hooks installed$(NC)"
@@ -94,13 +146,19 @@ setup: ## Setup all projects (go mod tidy + flutter pub get if available)
 		cd $(KAWA_WEB_DIR) && flutter pub get; \
 		echo "$(GREEN)✓ Kawa Web Flutter setup complete$(NC)"; \
 	else \
-		echo "$(YELLOW)Flutter not found - skipping flutter pub get$(NC)"; \
-		echo "$(BLUE)Will serve pre-built files from build/web$(NC)"; \
+		echo "$(YELLOW)⚠ Flutter not found - skipping flutter pub get$(NC)"; \
+		echo "$(BLUE)  ℹ Will serve pre-built files from build/web if available$(NC)"; \
+		if [ ! -d "$(KAWA_WEB_DIR)/build/web" ]; then \
+			echo "$(YELLOW)⚠ No pre-built web files found in $(KAWA_WEB_DIR)/build/web$(NC)"; \
+			echo "$(BLUE)  Consider installing Flutter to build the web project$(NC)"; \
+		else \
+			echo "$(GREEN)✓ Pre-built web files found$(NC)"; \
+		fi; \
 	fi
 	@echo ""
 	@echo "$(GREEN)🎉 All projects setup successfully!$(NC)"
 
-test: ## Run tests for all projects
+test: check-core-dependencies ## Run tests for all projects
 	@echo "$(BLUE)🧪 Running tests for all projects...$(NC)"
 	@echo ""
 	@echo "$(YELLOW)Testing Kawa (Go) project...$(NC)"
@@ -120,7 +178,7 @@ test: ## Run tests for all projects
 		cd $(KAWA_WEB_DIR) && flutter test || { echo "$(RED)✗ Kawa Web tests failed$(NC)"; exit 1; }; \
 		echo "$(GREEN)✓ Kawa Web tests passed$(NC)"; \
 	else \
-		echo "$(YELLOW)Flutter not available - skipping Flutter tests$(NC)"; \
+		echo "$(YELLOW)⚠ Flutter not available - skipping Flutter tests$(NC)"; \
 	fi
 	@echo ""
 	@echo "$(GREEN)🎉 All available tests passed successfully!$(NC)"
@@ -129,24 +187,26 @@ setup-precommit: ## Install and setup pre-commit hooks
 	@echo "$(BLUE)🔧 Setting up pre-commit hooks...$(NC)"
 	@if ! command -v pre-commit >/dev/null 2>&1; then \
 		echo "$(YELLOW)Installing pre-commit...$(NC)"; \
-		if command -v pip3 >/dev/null 2>&1; then \
-			pip3 install pre-commit; \
-		elif command -v pip >/dev/null 2>&1; then \
-			pip install pre-commit; \
-		elif command -v brew >/dev/null 2>&1; then \
-			brew install pre-commit; \
-		else \
-			echo "$(RED)✗ Could not install pre-commit. Please install manually$(NC)"; \
-			echo "$(BLUE)Visit: https://pre-commit.com/#install$(NC)"; \
-			exit 1; \
+		if [ ! -d "venv" ]; then \
+			echo "$(YELLOW)Creating Python virtual environment...$(NC)"; \
+			$(PYTHON_CMD) -m venv venv; \
 		fi; \
+		echo "$(YELLOW)Activating virtual environment...$(NC)"; \
+		. venv/bin/activate && pip install pre-commit && echo "$(GREEN)✓ pre-commit installed in virtual environment$(NC)" || { \
+			echo "$(RED)✗ Failed to install pre-commit in virtual environment$(NC)"; \
+			exit 1; \
+		}; \
 	else \
 		echo "$(GREEN)✓ pre-commit already installed$(NC)"; \
 	fi
-	@pre-commit install
-	@pre-commit install --hook-type commit-msg
+	@if [ -d "venv" ]; then \
+		. venv/bin/activate && pre-commit install && pre-commit install --hook-type commit-msg; \
+	else \
+		pre-commit install && pre-commit install --hook-type commit-msg; \
+	fi
 	@echo "$(GREEN)✓ Pre-commit hooks installed successfully$(NC)"
 	@echo "$(BLUE)💡 Pre-commit will now run automatically on each commit$(NC)"
+	@echo "$(YELLOW)💡 TIP: When needed, activate the virtual environment with: . venv/bin/activate$(NC)"
 
 check-precommit: ## Run pre-commit hooks on all files
 	@echo "$(BLUE)🔍 Running pre-commit hooks on all files...$(NC)"
@@ -183,9 +243,6 @@ ifeq ($(UNAME_S),Darwin)
 	else \
 		echo "$(YELLOW)No process found on port $(PORT)$(NC)"; \
 	fi
-endif
-ifeq ($(UNAME_S),Windows)
-	@for /f "tokens=5" %%a in ('netstat -ano ^| findstr :$(PORT)') do taskkill /F /PID %%a 2>nul || echo No process found on port $(PORT)
 endif
 
 extract-and-kill-ports: ## Extract ports from service_info and kill processes
@@ -338,10 +395,11 @@ build-kawa-web: setup-kawa-web-env ## Build kawa_web project (Flutter if availab
 		flutter build web; \
 		echo "$(GREEN)✓ kawa_web built successfully$(NC)"; \
 	else \
-		echo "$(YELLOW)Flutter not found - checking for pre-built files$(NC)"; \
+		echo "$(YELLOW)⚠ Flutter not found - checking for pre-built files$(NC)"; \
 		if [ ! -d "$(KAWA_WEB_DIR)/build/web" ]; then \
 			echo "$(RED)✗ No pre-built files found in $(KAWA_WEB_DIR)/build/web$(NC)"; \
 			echo "$(RED)✗ Either install Flutter or provide pre-built web files$(NC)"; \
+			echo "$(BLUE)🔗 Install Flutter: https://flutter.dev/docs/get-started/install$(NC)"; \
 			$(MAKE) stop-all; \
 			exit 1; \
 		fi; \
@@ -355,13 +413,9 @@ run-kawa-web: build-kawa-web ## Start kawa_web using Python HTTP server
 		$(MAKE) stop-all; \
 		exit 1; \
 	fi
-	@echo "$(BLUE)Starting Python HTTP server on port 8000$(NC)"
-	@if command -v python3 >/dev/null 2>&1; then \
-		cd $(KAWA_WEB_DIR)/build/web && python3 -m http.server $(KAWA_WEB_PORT) > ../../../kawa_web.log 2>&1 & \
-	else \
-		cd $(KAWA_WEB_DIR)/build/web && python -m http.server $(KAWA_WEB_PORT) > ../../../kawa_web.log 2>&1 & \
-	fi; \
-	KAWA_WEB_PID=$$!; \
+	@echo "$(BLUE)Starting Python HTTP server on port $(KAWA_WEB_PORT)$(NC)"
+	@cd $(KAWA_WEB_DIR)/build/web && $(PYTHON_CMD) -m http.server $(KAWA_WEB_PORT) > ../../../kawa_web.log 2>&1 &
+	@KAWA_WEB_PID=$$!; \
 	echo $$KAWA_WEB_PID >> $(PIDS_FILE); \
 	echo "$(BLUE)Waiting for kawa_web HTTP server to start...$(NC)"; \
 	KAWA_WEB_URL="http://127.0.0.1:$(KAWA_WEB_PORT)"; \
@@ -434,8 +488,8 @@ stop-all: ## Stop all running projects by killing processes on ports from servic
 	fi
 	@pkill -f "code-server --auth none" 2>/dev/null || true
 	@pkill -f "go run . serve" 2>/dev/null || true
-	@pkill -f "python.*http.server 8000" 2>/dev/null || true
-	@pkill -f "python3.*http.server 8000" 2>/dev/null || true
+	@pkill -f "python.*http.server $(KAWA_WEB_PORT)" 2>/dev/null || true
+	@pkill -f "python3.*http.server $(KAWA_WEB_PORT)" 2>/dev/null || true
 	@rm -f $(SERVICE_INFO_FILE)
 	@echo "$(GREEN)✓ All projects stopped$(NC)"
 
@@ -459,3 +513,18 @@ clean: stop-all ## Stop all projects and clean up log files
 restart: stop-all run-all ## Restart all projects
 
 status: show-status ## Show current status of all services
+
+run-precommit: ## Run pre-commit commands in the virtual environment
+	@echo "$(BLUE)🔍 Running pre-commit in virtual environment...$(NC)"
+	@if [ ! -d "venv" ]; then \
+		echo "$(RED)✗ Virtual environment not found. Run 'make setup-precommit' first$(NC)"; \
+		exit 1; \
+	fi
+	@echo "$(YELLOW)Command format: make run-precommit CMD=\"pre-commit run --all-files\"$(NC)"
+	@if [ -z "$(CMD)" ]; then \
+		echo "$(RED)✗ No command specified. Use CMD=\"your-command\"$(NC)"; \
+		echo "$(YELLOW)Example: make run-precommit CMD=\"pre-commit run --all-files\"$(NC)"; \
+		exit 1; \
+	fi
+	@. venv/bin/activate && $(CMD)
+	@echo "$(GREEN)✓ Pre-commit command completed$(NC)"

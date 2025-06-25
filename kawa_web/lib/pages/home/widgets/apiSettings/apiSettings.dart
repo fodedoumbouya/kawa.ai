@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kawa_web/base/baseWidget.dart';
 import 'package:kawa_web/common/adapterHelper/responsive_sizer.dart';
 import 'package:kawa_web/common/dataPersitence/dataPersistence.dart';
 import 'package:kawa_web/common/router/appNavigator.dart';
@@ -15,14 +16,16 @@ import 'package:kawa_web/widgets/coreToast.dart';
 import 'package:kawa_web/widgets/custom/custom.dart';
 import 'package:collection/collection.dart';
 
-class APISettingKey extends StatefulWidget {
+class APISettingKey extends BaseWidget {
   const APISettingKey({super.key});
 
   @override
-  State<APISettingKey> createState() => _APISettingKeyState();
+  BaseWidgetState<BaseWidget> getState() {
+    return _APISettingKeyState();
+  }
 }
 
-class _APISettingKeyState extends State<APISettingKey> {
+class _APISettingKeyState extends BaseWidgetState<APISettingKey> {
   final apiSettingModeList = ValueNotifier<List<ApiSettingModel>?>(null);
   final selectedModel = ValueNotifier<ApiSettingModel?>(null);
   final TextEditingController _apiController = TextEditingController();
@@ -100,8 +103,6 @@ class _APISettingKeyState extends State<APISettingKey> {
 
   @override
   Widget build(BuildContext context) {
-    final bp = Theme.of(context).primaryColor;
-    final bd = Theme.of(context).colorScheme.primaryContainer;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -120,11 +121,11 @@ class _APISettingKeyState extends State<APISettingKey> {
             );
             return CustomContainer(
               w: 600,
-              color: bp,
+              color: bp(),
               borderRadius: BorderRadius.circular(KConstant.radius),
               padding: EdgeInsets.all(16),
               border: Border.all(
-                color: bd.withValues(alpha: 0.1),
+                color: bd().withValues(alpha: 0.1),
                 width: 1,
               ),
               child: Column(
@@ -132,7 +133,7 @@ class _APISettingKeyState extends State<APISettingKey> {
                   buildTitleIcon(
                     icon: Icons.settings,
                     title: 'API Settings',
-                    color: bd,
+                    color: bd(),
                   ),
                   CustomTextWidget(
                     "Configure Al model selection and API keys. Settings are saved automatically in your browser and are not shared with any server.",
@@ -140,12 +141,12 @@ class _APISettingKeyState extends State<APISettingKey> {
                     size: 14,
                   ),
                   const SizedBox(height: 8),
-                  divider(color: bd.withValues(alpha: 0.1)),
+                  divider(color: bd().withValues(alpha: 0.1)),
                   const SizedBox(height: 20),
                   buildTitleIcon(
                     icon: Icons.cloud,
                     title: 'AI Host Selection',
-                    color: bd,
+                    color: bd(),
                   ),
                   const SizedBox(height: 8),
                   CustomDropdown<ApiSettingModel>(
@@ -156,19 +157,21 @@ class _APISettingKeyState extends State<APISettingKey> {
                       return CustomTextWidget(
                         item.model_host.name,
                         size: 16,
-                        color: bd,
+                        color: bd(),
                       );
                     },
                     headerBuilder: (context, selectedItem, enabled) {
                       return CustomTextWidget(
                         selectedItem.model_host.name,
                         size: 16,
-                        color: bd,
+                        color: bd(),
                       );
                     },
                     decoration: CustomDropdownDecoration(
+                      closedFillColor: bp(),
+                      expandedFillColor: bp(),
                       closedBorder: Border.all(
-                        color: bd.withValues(alpha: 0.1),
+                        color: bd().withValues(alpha: 0.1),
                         width: 1,
                       ),
                     ),
@@ -177,12 +180,12 @@ class _APISettingKeyState extends State<APISettingKey> {
                     },
                   ),
                   const SizedBox(height: 8),
-                  divider(color: bd.withValues(alpha: 0.1)),
+                  divider(color: bd().withValues(alpha: 0.1)),
                   const SizedBox(height: 20),
                   buildTitleIcon(
                     icon: Icons.settings_input_composite_outlined,
                     title: 'AI Model Selection',
-                    color: bd,
+                    color: bd(),
                   ),
                   const SizedBox(height: 8),
                   ValueListenableBuilder(
@@ -193,8 +196,10 @@ class _APISettingKeyState extends State<APISettingKey> {
                         items: value?.model_list ?? [],
                         initialItem: value?.model_name,
                         decoration: CustomDropdownDecoration(
+                          closedFillColor: bp(),
+                          expandedFillColor: bp(),
                           closedBorder: Border.all(
-                            color: bd.withValues(alpha: 0.1),
+                            color: bd().withValues(alpha: 0.1),
                             width: 1,
                           ),
                         ),
@@ -205,12 +210,12 @@ class _APISettingKeyState extends State<APISettingKey> {
                     },
                   ),
                   const SizedBox(height: 8),
-                  divider(color: bd.withValues(alpha: 0.1)),
+                  divider(color: bd().withValues(alpha: 0.1)),
                   const SizedBox(height: 20),
                   buildTitleIcon(
                     icon: Icons.key,
                     title: 'API Key',
-                    color: bd,
+                    color: bd(),
                   ),
                   const SizedBox(height: 8),
                   CustomContainer(
@@ -218,23 +223,23 @@ class _APISettingKeyState extends State<APISettingKey> {
                       horizontal: 10,
                     ),
                     h: 50,
-                    color: bp,
+                    color: bp(),
                     borderRadius: BorderRadius.circular(KConstant.radius),
                     boxShadow: [
                       BoxShadow(
-                        color: bd.withValues(alpha: 0.1),
+                        color: bd().withValues(alpha: 0.1),
                         blurRadius: 1,
                         spreadRadius: 1,
                       ),
                     ],
                     child: TextField(
-                      cursorColor: bd,
-                      style: GoogleFonts.openSans(color: bd),
+                      cursorColor: bd(),
+                      style: GoogleFonts.openSans(color: bd()),
                       controller: _apiController,
                       decoration: InputDecoration(
                         hintText: 'Enter your API key',
                         hintStyle: GoogleFonts.openSans(
-                            color: bd.withValues(alpha: 0.5)),
+                            color: bd().withValues(alpha: 0.5)),
                         border: InputBorder.none,
                         errorBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
@@ -257,12 +262,12 @@ class _APISettingKeyState extends State<APISettingKey> {
                         },
                         child: CustomContainer(
                           padding: const EdgeInsets.all(8),
-                          color: bp,
+                          color: bp(),
                           borderRadius: BorderRadius.circular(KConstant.radius),
                           mouseRegion: true,
                           boxShadow: [
                             BoxShadow(
-                              color: bd.withValues(alpha: 0.1),
+                              color: bd().withValues(alpha: 0.1),
                               blurRadius: 1,
                               spreadRadius: 1,
                             ),
@@ -271,7 +276,7 @@ class _APISettingKeyState extends State<APISettingKey> {
                             'Cancel',
                             size: 18,
                             fontWeight: FontWeight.bold,
-                            color: bd,
+                            color: bd(),
                           ),
                         ),
                       ),
@@ -300,7 +305,7 @@ class _APISettingKeyState extends State<APISettingKey> {
                           mouseRegion: true,
                           boxShadow: [
                             BoxShadow(
-                              color: bd.withValues(alpha: 0.1),
+                              color: bd().withValues(alpha: 0.1),
                               blurRadius: 1,
                               spreadRadius: 1,
                             ),
@@ -309,7 +314,7 @@ class _APISettingKeyState extends State<APISettingKey> {
                             'Save Settings',
                             size: 18,
                             fontWeight: FontWeight.bold,
-                            color: bp,
+                            color: bp(),
                           ),
                         ),
                       ),

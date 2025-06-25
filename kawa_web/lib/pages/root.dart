@@ -13,8 +13,6 @@ class Root extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // transText = (langProvider.getState(ref) as TransText);
-
     /// [LayoutBuilder] is used to get the size given to the app by the OS
     /// [ResponsiveSizer] is used to get the screen type, orientation and the size
     return LayoutBuilder(builder: (contextResize, constraints) {
@@ -24,13 +22,11 @@ class Root extends ConsumerWidget {
         key: ResizeRootApp.instance.globalKey,
         builder: (context, orientation, screenType) {
           return MaterialApp.router(
-            // title: transText.appName,
-            title: "Kawa Web",
+            title: "Kawa.ai",
             theme: KTheme.lightTheme(),
             darkTheme: KTheme.dartTheme(),
             // themeMode: themeState.themeMode,
             debugShowCheckedModeBanner: false,
-            // navigatorKey: NavigatorUtils.instance.navigatorKey,
             routeInformationProvider: AppRouter.router.routeInformationProvider,
             routeInformationParser: AppRouter.router.routeInformationParser,
             routerDelegate: AppRouter.router.routerDelegate,
@@ -40,14 +36,7 @@ class Root extends ConsumerWidget {
               DefaultCupertinoLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            // locale: transText.lang == Lang.fr_FR
-            //     ? const Locale('fr', 'FR')
-            //     : const Locale('en', 'US'),
 
-            // supportedLocales: const [
-            //   Locale('fr', 'FR'),
-            //   Locale('en', 'US'),
-            // ],
             builder: (context, child) {
               final childWithToast = Toast(
                   navigatorKey: AppRouter.navigatorKey,
