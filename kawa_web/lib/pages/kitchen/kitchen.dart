@@ -78,13 +78,13 @@ class _KitchenState extends BaseWidgetState<Kitchen> {
     }
     try {
       final bodyJson = routersMap;
-      print("bodyJson: $bodyJson");
+      // print("bodyJson: $bodyJson");
       for (var path in bodyJson.entries) {
         String p = path.value;
         if (p.contains("/:")) {
           p = "${p.replaceAll("/:", "?")}=1";
         }
-        print("path: $p");
+        // print("path: $p");
         final isSelected = p == "/login" ? true : false;
         final appPath = AppPath(
             id: getUniqueID(), name: path.key, path: p, isSelected: isSelected);
@@ -110,7 +110,7 @@ class _KitchenState extends BaseWidgetState<Kitchen> {
     _loading.value = true;
     project.value = await UserManagement.getProject(widget.projectId);
     _host.value = await UserManagement.getProjectHost(widget.projectId);
-    _isServerRunning.value = await DioUtil.isServerRunning(_host.value);
+    _isServerRunning.value = await DioUtil.isServerRunning(widget.projectId);
     // project.value.projectStructure
     getAppPath(project.value?.routers ?? "");
     _loading.value = false;
@@ -238,9 +238,7 @@ class _KitchenState extends BaseWidgetState<Kitchen> {
         _isServerRunning.value = true;
         _host.value = resp;
         webviewController?.loadUrl(
-          urlRequest: URLRequest(
-              url: WebUri(
-                  "${_host.value}${_appPaths.value?.firstWhere((element) => element.isSelected).path}")),
+          urlRequest: URLRequest(url: WebUri("${_host.value}")),
         );
         AppLog.d("Server started: $resp");
       } else {
@@ -655,6 +653,7 @@ class _KitchenState extends BaseWidgetState<Kitchen> {
                                                   },
                                                   onUpdateVisitedHistory:
                                                       (src) {
+                                                    print("src: $src");
                                                     final tmp =
                                                         List<AppPath>.from(
                                                             _appPaths.value ??
@@ -720,8 +719,8 @@ class _KitchenState extends BaseWidgetState<Kitchen> {
                                                           element.path ==
                                                           selectionApp)
                                                   ?.initPrompt;
-                                              print(
-                                                  "selectPrompt: $selectPrompt");
+                                              // print(
+                                              //     "selectPrompt: $selectPrompt");
                                               return GlobalSettings(
                                                 host: value,
                                                 initPrompt: selectPrompt,

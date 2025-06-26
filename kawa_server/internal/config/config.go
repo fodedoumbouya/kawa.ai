@@ -16,9 +16,13 @@ type APISetting struct {
 
 // list of APISetting
 var supportApiSetting = []APISetting{
+	// {
+	// 	ModelHost: llm.Gemini,
+	// 	ModelList: []string{llm.Gemini20FlashExp},
+	// },
 	{
 		ModelHost: llm.Gemini,
-		ModelList: []string{llm.Gemini20FlashExp},
+		ModelList: []string{llm.Gemini25Flash},
 	},
 	{
 		ModelHost: llm.Mistral,

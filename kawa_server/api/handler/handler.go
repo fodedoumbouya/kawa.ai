@@ -35,7 +35,10 @@ func Handler(r *core.ServeEvent) {
 	api.GET("/project/{projectId}", projectplan.GetProjectPlan)
 	api.GET("/runProject/{projectId}", projectplan.RunProject)
 	api.GET("/stopProject/{projectId}", projectplan.CloseProject)
+	// project running
+	api.GET("/projectRunning/{projectId}", projectplan.GetProjectRunningStatus)
 	api.POST("/createProject", projectplan.CreateProject)
+
 	// delete project
 	api.DELETE("/project/{projectId}", projectplan.DeleteProject)
 	api.POST("/editScreen", editscreen.EditScreenHandler)

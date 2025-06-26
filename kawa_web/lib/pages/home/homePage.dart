@@ -148,7 +148,11 @@ class _HomePageState extends BaseWidgetState<HomePage> {
 
   void handleError(String message) {
     CoreToast.showError(message);
-    isGenerating.value = message.contains("API key") ? -1 : 2;
+    Future.delayed(const Duration(seconds: 2), () {
+      isGenerating.value = -1;
+      _progressHandler.resetProgress();
+      rebuildState();
+    });
   }
 
   @override

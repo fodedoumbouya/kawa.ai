@@ -24,6 +24,7 @@ const (
 const (
 	GeminiExp1206      string = "gemini-exp-1206"
 	Gemini20FlashExp   string = "gemini-2.0-flash-exp" // default
+	Gemini25Flash      string = "gemini-2.5-flash"
 	Gemini20ProExp0205 string = "gemini-2.0-pro-exp-02-05"
 	Gemini15Flash      string = "gemini-1.5-flash"
 	Gemini20Flash      string = "gemini-2.0-flash"

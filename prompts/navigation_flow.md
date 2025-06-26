@@ -16,45 +16,39 @@ Requirements:
 6. Include navigation hierarchy levels (1-4)
 7. Specify presentation modes for special screens (modal, expandable, etc.)
 
-## Structure the output as:
-```json
-{
-  "appNavigation": {
-    "entryPoint": {
-      "screen": "",
-      "destinationOnSuccess": ""
-    },
-    // Only include if app needs tab navigation
-    "bottomTabNavigation": {
-      "screens": [],
-      "behavior": "switchBetweenTabsDirectly"
-    },
-    "contentScreens": {
-      "accessibleFrom": [],
-      "screens": []
-    },
-    "navigationRules": {
-      "hierarchyLevels": {
-        "level1": [],
-        "level2": [],
-        "level3": [],
-        "level4": [],
-        "utility": []
-      },
-      "transitions": {
-        "allowBackNavigation": true,
-        "maintainTabSelection": true
-      }
-    },
-    "path": {
-    "home": "/",
-    "login": "/login",
-    "search": "/search?id=0",
-    "library": "/library",
-    "playlist": "/library/playlist",
-  }
-  }
+## Structure the output in json that will unmarshal into the following Go struct:
+```golang
+type AppNavigationModel struct {
+	AppNavigation struct {
+		EntryPoint struct {
+			Screen               string      `json:"screen"`
+			DestinationOnSuccess interface{} `json:"destinationOnSuccess"`
+		} `json:"entryPoint"`
+		BottomTabNavigation struct {
+			Screens  []string `json:"screens"`
+			Behavior string   `json:"behavior"`
+		} `json:"bottomTabNavigation"`
+		ContentScreens struct {
+			AccessibleFrom []string `json:"accessibleFrom"`
+			Screens        []string `json:"screens"`
+		} `json:"contentScreens"`
+		NavigationRules struct {
+			HierarchyLevels struct {
+				Level1  []string      `json:"level1"`
+				Level2  []string      `json:"level2"`
+				Level3  []interface{} `json:"level3"`
+				Level4  []interface{} `json:"level4"`
+				Utility []interface{} `json:"utility"`
+			} `json:"hierarchyLevels"`
+			Transitions struct {
+				AllowBackNavigation  bool `json:"allowBackNavigation"`
+				MaintainTabSelection bool `json:"maintainTabSelection"`
+			} `json:"transitions"`
+		} `json:"navigationRules"`
+		Path map[string]string `json:"path"`
+	} `json:"appNavigation"`
 }
+
 ```
 
 ## Rules:

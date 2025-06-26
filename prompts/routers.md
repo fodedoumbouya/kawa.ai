@@ -80,6 +80,9 @@ List<RouteBase> appRouter = <RouteBase>[
 
 ];
 
+
+ **Note:** for the AppNavigator class, You must use put the `parent` path in the `go` method to navigate to the child routes. For example, to navigate to the search screen, use `AppRouter.router.go("${AppRoutes.home}${AppRoutes.search(id: id)}");`
+
 class AppNavigator {
   AppNavigator._();
 
@@ -91,13 +94,13 @@ class AppNavigator {
     AppRouter.router.pop();
   }
 
- // I added the `./` because search is a child of home so all child routes should start with `./`
+
   static void goSearch({required String id}) {
-    AppRouter.router.push("./${AppRoutes.search(id: id)}");
+    AppRouter.router.go("${AppRoutes.home}${AppRoutes.search(id: id)}");
   }
 
   static void goLogin() {
-    AppRouter.router.push(AppRoutes.login);
+    AppRouter.router.go(AppRoutes.login);
   }
 
   static void clearAndNavigate(String path) {

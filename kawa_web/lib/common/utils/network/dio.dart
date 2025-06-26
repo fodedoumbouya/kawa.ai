@@ -154,13 +154,16 @@ class DioUtil {
     }
   }
 
-  static Future<bool> isServerRunning(String? url) async {
-    if (url == null) {
-      return false;
-    }
+  static Future<bool> isServerRunning(String projectId) async {
     try {
-      final response = await dio.get(url);
-      return response.statusCode == 200;
+      final response = await dio.get("/projectRunning/$projectId");
+      // return response.statusCode == 200;
+      if (response.statusCode == 200) {
+        final data = response.data;
+        return data['running'] ?? false; // Check if 'running' key exists
+      } else {
+        return false; // Non-200 status code
+      }
     } catch (e) {
       return false;
     }
