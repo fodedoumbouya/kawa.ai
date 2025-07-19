@@ -135,17 +135,19 @@ class _LoginState extends BaseWidgetState<Login> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-            CustomTextWidget("Forgot Password?",
-                size: 16,
-                color: bd().withValues(alpha: 0.7),
-                fontWeight: FontWeight.bold),
+            // const SizedBox(height: 20),
+            // CustomTextWidget("Forgot Password?",
+            //     size: 16,
+            //     color: bd().withValues(alpha: 0.7),
+            //     fontWeight: FontWeight.bold),
             const SizedBox(height: 20),
             ConfirmButton(
-                txt: "Sign In",
+                txt: "Login",
                 bColor: KColors.bcBlue,
-                txtSize: 13,
+                txtSize: 10,
                 width: 900,
+                elevation: 0,
+                radius: 3,
                 onPressed: () {
                   if (_emailController.text.isEmpty ||
                       _passwordController.text.isEmpty) {
