@@ -57,7 +57,7 @@ func Handler(r *core.ServeEvent) {
 	api.GET("/getVscode/{projectId}", getVscodeHandle.GetVscodeUrl)
 
 	//  no auth required on theses
-	apiNoAuth.GET("/subscribe", reload.SubscribeHoReloard)
+	apiNoAuth.GET("/subscribe/{projectId}", reload.SubscribeHoReloard)
 	apiNoAuth.POST("/reload", reload.SendHotReloadExterne)
 	apiNoAuth.GET("/subscribeProjectProgress", projectProgess.SubscribeProjectProgress)
 	// download project - no auth required

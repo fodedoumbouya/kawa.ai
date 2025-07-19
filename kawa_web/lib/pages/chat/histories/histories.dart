@@ -4,8 +4,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kawa_web/common/adapterHelper/responsive_sizer.dart';
 import 'package:kawa_web/common/utils/constant.dart';
+import 'package:kawa_web/common/utils/style/colors.dart';
 import 'package:kawa_web/model/chatMessage.dart';
 import 'package:kawa_web/widgets/custom/custom.dart';
+import 'package:markdown/markdown.dart' as md;
 
 class HistoriesChat extends StatefulWidget {
   final List<ChatMessage> messages;
@@ -35,7 +37,7 @@ class _HistoriesChatState extends State<HistoriesChat> {
         final double distanceToBottom =
             _scrollController.position.maxScrollExtent -
                 _scrollController.offset;
-        if (distanceToBottom > 150) {
+        if (distanceToBottom > 50) {
           // Threshold of 150 pixels from bottom
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
@@ -118,14 +120,22 @@ class MessageBubble extends StatelessWidget {
               data: message.text,
               shrinkWrap: true,
               selectable: true,
+              physics: const NeverScrollableScrollPhysics(),
+              extensionSet: md.ExtensionSet(
+                md.ExtensionSet.gitHubFlavored.blockSyntaxes,
+                <md.InlineSyntax>[
+                  md.EmojiSyntax(),
+                  ...md.ExtensionSet.gitHubFlavored.inlineSyntaxes
+                ],
+              ),
               styleSheet: MarkdownStyleSheet(
                 codeblockDecoration: BoxDecoration(
-                  color: bp,
-                  borderRadius: BorderRadius.circular(KConstant.radius),
-                  border: Border.all(color: bd.withValues(alpha: 0.1)),
+                  color: const Color(0xFF2F2F2F),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 code: GoogleFonts.inter(
-                  color: bd,
+                  color: KColors.bcBlue.withValues(alpha: 0.5),
+                  fontSize: 9.sp,
                   fontWeight: FontWeight.w700,
                 ),
                 a: GoogleFonts.inter(
@@ -137,6 +147,16 @@ class MessageBubble extends StatelessWidget {
                 p: GoogleFonts.inter(
                   color: bd,
                   fontSize: 10.sp,
+                ),
+                strong: GoogleFonts.inter(
+                  color: bd,
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w900,
+                ),
+                h2: GoogleFonts.inter(
+                  color: bd,
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
             ),
