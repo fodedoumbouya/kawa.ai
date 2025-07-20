@@ -60,7 +60,7 @@ func EditScreenHandler(c *core.RequestEvent) error {
 		0,
 	)
 	if err != nil {
-		fmt.Println("Error getting chat record: ", err)
+		// fmt.Println("Error getting chat record: ", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 
@@ -71,7 +71,7 @@ func EditScreenHandler(c *core.RequestEvent) error {
 		0,
 	)
 	if err != nil {
-		fmt.Println("Error getting Message record: ", err)
+		//fmt.Println("Error getting Message record: ", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
 

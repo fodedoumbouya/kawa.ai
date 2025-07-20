@@ -71,8 +71,11 @@ func generateNavigation(screens string, appNavig string, apiKey, modelName strin
 	// Unmarshal the JSON data into the Root struct
 	var navScreen app_model.File
 	// First attempt to clean the response
-	cleanResp := strings.ReplaceAll(resp, "\\\n", "\\n")
-
+	//     const cleanedText = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+	cleanResp := strings.ReplaceAll(resp, "```json", "")
+	cleanResp = strings.ReplaceAll(cleanResp, "```", "")
+	cleanResp = strings.ReplaceAll(cleanResp, "\n", "")
+	cleanResp = strings.TrimSpace(cleanResp)
 	var err2 error
 	err = json.Unmarshal([]byte(cleanResp), &navScreen)
 	if err != nil {
@@ -82,7 +85,7 @@ func generateNavigation(screens string, appNavig string, apiKey, modelName strin
 
 		err2 = decoder.Decode(&navScreen)
 		if err2 != nil {
-			fmt.Printf("Failed JSON: %s\n", resp)
+			fmt.Printf("Failed JSON: %s\n data: %s", resp, cleanResp)
 			return app_model.File{}, fmt.Errorf("JSON parse error: %v, original error: %v", err2, err)
 		}
 	}
@@ -117,7 +120,7 @@ var firstStructure = app_model.DirEntryStructure{
 
 func buildNavigation(navScreen app_model.File, projectName, projectId string) error {
 	projectName = projectName + "_" + projectId
-	rootDir, err := directory_utils.FindRootDir("kawa_server")
+	rootDir, err := directory_utils.FindRootDir(constant.ServerFolderName)
 	if err != nil {
 		return err
 	}

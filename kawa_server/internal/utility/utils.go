@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -43,14 +44,14 @@ func DeleteFolder(projectName, projectId string) error {
 func RunDartApp(projectName, projectId string) (string, int, error) {
 	projectName = projectName + "_" + projectId
 	// Run the command to start the flutter app
-	cmd := exec.Command("dart", "run", "launcher.dart", projectName)
+	cmd := exec.Command("dart", "run", "launcher.dart", projectName, constant.GeneratedProjectDirectory)
 	rootDir, err := directory_utils.FindRootDir(constant.ServerFolderName)
 	if err != nil {
 		fmt.Println("Error finding the root directory: ", err)
 		return "", 0, err
 	}
 
-	rootDir += fmt.Sprintf("/%s/script", constant.GeneratedProjectDirectory)
+	rootDir += "/pkg/script"
 	cmd.Dir = rootDir
 
 	// Create pipes for stdout/stderr
@@ -91,20 +92,58 @@ func RunDartApp(projectName, projectId string) (string, int, error) {
 		if port == "" {
 			return "", 0, fmt.Errorf("failed to detect port in output")
 		}
-		return "http://localhost:" + port, cmd.Process.Pid, nil
+		pid, _ := ExactPidDart(port)
+		return "http://localhost:" + port, pid, nil
 	case <-time.After(2 * time.Minute):
 		return "", 0, fmt.Errorf("timeout waiting for localhost detection")
 	}
 }
 
+func ExactPidDart(port string) (int, error) {
+	// Use lsof to find the process ID using the port
+	cmd := exec.Command("lsof", "-i", fmt.Sprintf(":%s", port))
+	output, err := cmd.Output()
+	if err != nil {
+		return 0, fmt.Errorf("error finding process by port %s: %v", port, err)
+	}
+
+	// Parse the output to find the PID
+	scanner := bufio.NewScanner(strings.NewReader(string(output)))
+	// get the pid where commad is dart
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Contains(line, "dart") {
+			fields := strings.Fields(line)
+			if len(fields) > 1 {
+				pid := fields[1]
+				// Convert PID to int
+				pidInt, err := strconv.Atoi(pid)
+				if err != nil {
+					return 0, fmt.Errorf("error converting PID %s to int: %v", pid, err)
+				}
+				return pidInt, nil
+			}
+		}
+	}
+	return 0, fmt.Errorf("no process found listening on port %s", port)
+
+}
+
 // New function to terminate the app
-func TerminateApp(pid int) {
+func TerminateApp(pid int) error {
 	// This assumes you have a way to terminate the process
 	// You might need to store the process reference from RunDartApp
 	process, err := os.FindProcess(pid)
+	fmt.Println("Terminating app with PID:", pid)
 	if err == nil {
-		process.Kill()
+		err = process.Kill()
+		if err == nil {
+			fmt.Println("App terminated successfully")
+			return nil
+		}
+		fmt.Println("Error terminating app:", err)
 	}
+	return fmt.Errorf("error terminating app with PID %d: %v", pid, err)
 }
 
 // Helper function to extract port number

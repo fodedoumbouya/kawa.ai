@@ -27,11 +27,12 @@ func CreateProjectStructure(project app_model.AppPlan, c *core.RequestEvent) (st
 		return "", "", fmt.Errorf("llm-key, llm-host and llm_model is required in request header")
 	}
 	var llmType llm.LlmType
-	if llm_host == "Mistral" {
+	switch llm_host {
+	case "Mistral":
 		llmType = llm.Mistral
-	} else if llm_host == "Gemini" {
+	case "Gemini":
 		llmType = llm.Gemini
-	} else {
+	default:
 		fmt.Println("llm-host is not supported")
 		return "", "", fmt.Errorf("llm-host is not supported")
 	}
@@ -39,7 +40,7 @@ func CreateProjectStructure(project app_model.AppPlan, c *core.RequestEvent) (st
 	// Get user authentication details
 	userRecord, err := pbdbutil.GetUserFromToken(c)
 	if err != nil {
-		fmt.Println("Error getting user from token: ", err)
+		// fmt.Println("Error getting user from token: ", err)
 		return "", "", fmt.Errorf("error getting user from token: %w", err)
 	}
 

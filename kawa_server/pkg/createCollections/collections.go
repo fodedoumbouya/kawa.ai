@@ -1,6 +1,8 @@
 package createcollections
 
 import (
+	"fmt"
+
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/tools/types"
 )
@@ -131,6 +133,11 @@ func CreateChatCollection(c *core.RequestEvent) error {
 	collection := core.NewBaseCollection("chat")
 	collection.Name = "chat"
 
+	projectCollection, err := c.App.FindCollectionByNameOrId("projects")
+	if err != nil {
+		return fmt.Errorf("failed to find projects collection: %v", err)
+	}
+
 	// Set access rules (open access as per schema)
 	collection.ListRule = types.Pointer("")
 	collection.ViewRule = types.Pointer("")
@@ -153,7 +160,7 @@ func CreateChatCollection(c *core.RequestEvent) error {
 		MaxSelect:     1,
 		MinSelect:     0,
 		CascadeDelete: false,
-		CollectionId:  "pbc_3853224427", // projects collection ID from schema
+		CollectionId:  projectCollection.Id,
 	})
 
 	// Add timestamps
@@ -191,6 +198,11 @@ func CreateMessageCollection(c *core.RequestEvent) error {
 	collection := core.NewBaseCollection("message")
 	collection.Name = "message"
 
+	chatCollection, err := c.App.FindCollectionByNameOrId("chat")
+	if err != nil {
+		return fmt.Errorf("failed to find chat collection: %v", err)
+	}
+
 	// Set access rules (open access as per schema)
 	collection.ListRule = types.Pointer("")
 	collection.ViewRule = types.Pointer("")
@@ -221,7 +233,7 @@ func CreateMessageCollection(c *core.RequestEvent) error {
 		MaxSelect:     1,
 		MinSelect:     0,
 		CascadeDelete: false,
-		CollectionId:  "pbc_3802282532", // chat collection ID from schema
+		CollectionId:  chatCollection.Id,
 	})
 
 	// Add timestamps
@@ -259,6 +271,11 @@ func CreateProjectAddressCollection(c *core.RequestEvent) error {
 	collection := core.NewBaseCollection("project_address")
 	collection.Name = "project_address"
 
+	projectCollection, err := c.App.FindCollectionByNameOrId("projects")
+	if err != nil {
+		return fmt.Errorf("failed to find projects collection: %v", err)
+	}
+
 	// Set access rules (open access as per schema)
 	collection.ListRule = types.Pointer("")
 	collection.ViewRule = types.Pointer("")
@@ -273,7 +290,7 @@ func CreateProjectAddressCollection(c *core.RequestEvent) error {
 		MaxSelect:     1,
 		MinSelect:     0,
 		CascadeDelete: false,
-		CollectionId:  "pbc_3853224427", // projects collection ID from schema
+		CollectionId:  projectCollection.Id,
 	})
 
 	// Add URL field
@@ -327,6 +344,11 @@ func CreateProjectsCollection(c *core.RequestEvent) error {
 	collection := core.NewBaseCollection("projects")
 	collection.Name = "projects"
 
+	userCollection, err := c.App.FindCollectionByNameOrId("users")
+	if err != nil {
+		return fmt.Errorf("failed to find users collection: %v", err)
+	}
+
 	// Set access rules (open access as per schema)
 	collection.ListRule = types.Pointer("")
 	collection.ViewRule = types.Pointer("")
@@ -363,7 +385,7 @@ func CreateProjectsCollection(c *core.RequestEvent) error {
 		MaxSelect:     1,
 		MinSelect:     0,
 		CascadeDelete: false,
-		CollectionId:  "_pb_users_auth_", // users collection ID
+		CollectionId:  userCollection.Id,
 	})
 
 	// Add timestamps
@@ -401,6 +423,11 @@ func CreateReferencesCollection(c *core.RequestEvent) error {
 	collection := core.NewBaseCollection("references")
 	collection.Name = "references"
 
+	projectCollection, err := c.App.FindCollectionByNameOrId("projects")
+	if err != nil {
+		return fmt.Errorf("failed to find projects collection: %v", err)
+	}
+
 	// Set access rules (no rules as per schema)
 	collection.ListRule = nil
 	collection.ViewRule = nil
@@ -415,7 +442,7 @@ func CreateReferencesCollection(c *core.RequestEvent) error {
 		MaxSelect:     1,
 		MinSelect:     0,
 		CascadeDelete: false,
-		CollectionId:  "pbc_3853224427", // projects collection ID from schema
+		CollectionId:  projectCollection.Id,
 	})
 
 	// Add reference JSON field
@@ -526,13 +553,17 @@ func updateChatCollectionFields(app core.App, collection *core.Collection) error
 
 	// Check for missing project relation field
 	if collection.Fields.GetByName("project") == nil {
+		projectCollection, err := app.FindCollectionByNameOrId("projects")
+		if err != nil {
+			return fmt.Errorf("failed to find projects collection: %v", err)
+		}
 		fieldsToAdd = append(fieldsToAdd, &core.RelationField{
 			Name:          "project",
 			Required:      false,
 			MaxSelect:     1,
 			MinSelect:     0,
 			CascadeDelete: false,
-			CollectionId:  "pbc_3853224427",
+			CollectionId:  projectCollection.Id,
 		})
 	}
 
@@ -592,13 +623,17 @@ func updateMessageCollectionFields(app core.App, collection *core.Collection) er
 
 	// Check for missing chat relation field
 	if collection.Fields.GetByName("chat") == nil {
+		chatCollection, err := app.FindCollectionByNameOrId("chat")
+		if err != nil {
+			return fmt.Errorf("failed to find chat collection: %v", err)
+		}
 		fieldsToAdd = append(fieldsToAdd, &core.RelationField{
 			Name:          "chat",
 			Required:      false,
 			MaxSelect:     1,
 			MinSelect:     0,
 			CascadeDelete: false,
-			CollectionId:  "pbc_3802282532",
+			CollectionId:  chatCollection.Id,
 		})
 	}
 
@@ -638,13 +673,17 @@ func updateProjectAddressCollectionFields(app core.App, collection *core.Collect
 
 	// Check for missing project relation field
 	if collection.Fields.GetByName("project") == nil {
+		projectCollection, err := app.FindCollectionByNameOrId("projects")
+		if err != nil {
+			return fmt.Errorf("failed to find projects collection: %v", err)
+		}
 		fieldsToAdd = append(fieldsToAdd, &core.RelationField{
 			Name:          "project",
 			Required:      false,
 			MaxSelect:     1,
 			MinSelect:     0,
 			CascadeDelete: false,
-			CollectionId:  "pbc_3853224427",
+			CollectionId:  projectCollection.Id,
 		})
 	}
 
@@ -732,13 +771,17 @@ func updateProjectsCollectionFields(app core.App, collection *core.Collection) e
 
 	// Check for missing user relation field
 	if collection.Fields.GetByName("user") == nil {
+		userCollection, err := app.FindCollectionByNameOrId("users")
+		if err != nil {
+			return fmt.Errorf("failed to find users collection: %v", err)
+		}
 		fieldsToAdd = append(fieldsToAdd, &core.RelationField{
 			Name:          "user",
 			Required:      false,
 			MaxSelect:     1,
 			MinSelect:     0,
 			CascadeDelete: false,
-			CollectionId:  "_pb_users_auth_",
+			CollectionId:  userCollection.Id,
 		})
 	}
 
@@ -778,13 +821,17 @@ func updateReferencesCollectionFields(app core.App, collection *core.Collection)
 
 	// Check for missing project relation field
 	if collection.Fields.GetByName("project") == nil {
+		projectCollection, err := app.FindCollectionByNameOrId("projects")
+		if err != nil {
+			return fmt.Errorf("failed to find projects collection: %v", err)
+		}
 		fieldsToAdd = append(fieldsToAdd, &core.RelationField{
 			Name:          "project",
 			Required:      false,
 			MaxSelect:     1,
 			MinSelect:     0,
 			CascadeDelete: false,
-			CollectionId:  "pbc_3853224427",
+			CollectionId:  projectCollection.Id,
 		})
 	}
 
