@@ -117,8 +117,8 @@ class NotFoundScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Not Found')),
-      body: const Center(child: Column(
+      appBar: AppBar(title:  Text('Not Found')),
+      body:  Center(child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('404 - Page Not Found', style: TextStyle(fontSize: 24)),
