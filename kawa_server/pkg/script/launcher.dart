@@ -170,4 +170,68 @@ Future<void> main(List<String> args) async {
       }
     }
   });
+
+  // await appStarted.future;
+  // final appId = await appStart.future;
+  // // final wsUri = await appDebugWsUri.future;
+  // print('\n\n\n\n\nApp started with appId: $appId \n\n\n\n\n');
+
+  // final vmService = await vmServiceConnectUri(wsUri);
+
+  // Since we used start-paused, we need to resume the isolates.
+  // await resumeAllIsolates(vmService);
+
+  // Send two hot reloads WITHOUT an unpause in between.
+  // for (int i = 0; i <= 1; i++) {
+  //   await Future.delayed(const Duration(seconds: 3));
+  //   final payload = jsonEncode([
+  //     {
+  //       "id": i,
+  //       "method": "app.restart",
+  //       "params": {
+  //         "appId": appId,
+  //         "fullRestart": true,
+  //       }
+  //     }
+  //   ]);
+  //   print('==> $payload');
+  //   proc.stdin.writeln(payload);
+  // }
+
+  // Repeatedly ensure all isolates are resumed (usually the IDE would notice
+  // new paused isolates, send breakpoints and then resume them).
+  // for (int i = 1; i <= 20; i++) {
+  //   await Future.delayed(const Duration(seconds: 2));
+  //   await resumeAllIsolates(vmService);
+  // }
+
+  // print('Done! Did everything complete?');
+
+  await proc.exitCode;
 }
+
+/// Resume all isolates. Since we're using --pause-on-start, new isolates
+/// created during a restart will start paused and the IDE/debug adapter will
+/// usually unpause them.
+// Future<void> resumeAllIsolates(VmService vmService) async {
+//   await Future.wait((await vmService.getVM())
+//       .isolates!
+//       .map((isolate) => tryResume(vmService, isolate)));
+// }
+
+// /// Attempt to resume an isolate only if it's paused, and print if it fails.
+// Future<Success> tryResume(VmService vmService, IsolateRef isolateRef) async {
+//   final isolate = await vmService.getIsolate(isolateRef.id!);
+//   if (isolate.pauseEvent == null ||
+//       isolate.pauseEvent?.kind == EventKind.kResume) {
+//     // Isolate is not paused.
+//     return Success();
+//   }
+
+//   try {
+//     return await vmService.resume(isolate.id!);
+//   } catch (e) {
+//     print('Failed to resume Isolate "${isolate.id}": $e');
+//     return Success();
+//   }
+// }

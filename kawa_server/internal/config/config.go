@@ -22,7 +22,7 @@ var supportApiSetting = []APISetting{
 	// },
 	{
 		ModelHost: llm.Gemini,
-		ModelList: []string{llm.Gemini25Flash},
+		ModelList: []string{llm.Gemini20FlashExp, llm.Gemini25Flash},
 	},
 	{
 		ModelHost: llm.Mistral,
