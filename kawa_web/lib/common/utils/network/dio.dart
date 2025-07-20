@@ -19,8 +19,6 @@ class DioUtil {
   }
 
   DioUtil._internal();
-  // static late Directory tempDir;
-  // static late Directory appDir;
 
   static init() {
     dio

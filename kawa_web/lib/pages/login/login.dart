@@ -135,11 +135,6 @@ class _LoginState extends BaseWidgetState<Login> {
                 ],
               ),
             ),
-            // const SizedBox(height: 20),
-            // CustomTextWidget("Forgot Password?",
-            //     size: 16,
-            //     color: bd().withValues(alpha: 0.7),
-            //     fontWeight: FontWeight.bold),
             const SizedBox(height: 20),
             ConfirmButton(
                 txt: "Login",

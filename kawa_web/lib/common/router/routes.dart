@@ -6,10 +6,7 @@ abstract class AppRoutes {
   static String kitchen({required String projectID}) =>
       '/kitchen?projectID=$projectID';
   static const login = '/login';
-  // static const kitchen = '/kitchen';
   static const signUp = '/signUp';
-  // static String subscription({required String shopId}) =>
-  //     '/subscription?shop_id=$shopId';
 }
 
 List<RouteBase> routes = <RouteBase>[

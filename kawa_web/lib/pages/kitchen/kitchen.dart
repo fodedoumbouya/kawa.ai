@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:kawa_web/base/baseWidget.dart';
@@ -9,22 +8,18 @@ import 'package:kawa_web/common/adapterHelper/responsive_sizer.dart';
 import 'package:kawa_web/common/router/appNavigator.dart';
 import 'package:kawa_web/common/router/appRoutes.dart';
 import 'package:kawa_web/common/utils/constant.dart';
-import 'package:kawa_web/common/utils/doubleValueListenable.dart';
 import 'package:kawa_web/common/utils/myLog.dart';
 import 'package:kawa_web/common/utils/network/dio.dart';
 import 'package:kawa_web/common/utils/style/colors.dart';
 import 'package:kawa_web/core/productUpdateListener/projectUpdateListener.dart';
 import 'package:kawa_web/core/userManagement/userManagement.dart';
-import 'package:kawa_web/model/generated/appPath.dart';
 import 'package:kawa_web/model/generated/gitResponse.dart';
 import 'package:kawa_web/model/generated/project.dart';
 import 'package:kawa_web/pages/chat/chat.dart';
 import 'package:kawa_web/pages/codePreview/codePreview.dart';
-import 'package:kawa_web/pages/globalSettings/globalSettings.dart';
 import 'package:kawa_web/pages/phone/phoneView.dart';
 import 'package:kawa_web/widgets/coreToast.dart';
 import 'package:kawa_web/widgets/custom/custom.dart';
-import 'package:collection/collection.dart';
 
 class Kitchen extends BaseWidget {
   final String projectId;

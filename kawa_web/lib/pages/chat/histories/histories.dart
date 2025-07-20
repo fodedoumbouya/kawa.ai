@@ -38,7 +38,7 @@ class _HistoriesChatState extends State<HistoriesChat> {
             _scrollController.position.maxScrollExtent -
                 _scrollController.offset;
         if (distanceToBottom > 50) {
-          // Threshold of 150 pixels from bottom
+          // Threshold of 50 pixels from bottom
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 300),
@@ -89,7 +89,7 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bd = Theme.of(context).colorScheme.primaryContainer;
-    final bp = Theme.of(context).primaryColor;
+    // final bp = Theme.of(context).primaryColor;
     // final bc = Theme.of(context).colorScheme.primary;
     // the message is a model response indicating it's generating
     final bool showModelResponse =

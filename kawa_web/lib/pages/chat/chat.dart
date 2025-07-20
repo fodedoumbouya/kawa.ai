@@ -68,11 +68,10 @@ class _ChatState extends BaseWidgetState<Chat> {
 
   @override
   void initState() {
+    super.initState();
     // Get all the messages
     getAllTheMessages();
     messageManager();
-
-    super.initState();
   }
 
   @override

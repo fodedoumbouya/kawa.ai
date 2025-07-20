@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:kawa_web/model/enum.dart';
 import 'package:kawa_web/model/generated/apiSettingModel.dart';
 import 'package:kawa_web/model/generated/user.dart';
 
@@ -10,7 +9,6 @@ class DataPersistence {
   DataPersistence._();
 
   static const String _ACCOUNT = 'account';
-  static const String _LANGUAGE = 'language';
   static const String modelAPiSetting = 'model_api_setting';
 
   static Future<void>? deleteAll() {
@@ -19,10 +17,6 @@ class DataPersistence {
 
   static Future<void>? deleteAccount() {
     return SpUtil.remove(_ACCOUNT);
-  }
-
-  static Future<void>? deleteLanguage() {
-    return SpUtil.remove(_LANGUAGE);
   }
 
   static UserModel? getAccount() {
@@ -36,22 +30,6 @@ class DataPersistence {
 
   static Future<void>? saveAccount(UserModel account) {
     return SpUtil.putString(_ACCOUNT, account.toJson());
-  }
-
-  static Lang getLanguage() {
-    final lang = SpUtil.getString(_LANGUAGE, defValue: Platform.localeName) ??
-        Platform.localeName;
-    if (lang.contains('fr')) {
-      return Lang.fr_FR;
-    } else if (lang.contains('en')) {
-      return Lang.en_US;
-    } else {
-      return Lang.none;
-    }
-  }
-
-  static Future<void> putLanguage(Lang lang) async {
-    await SpUtil.putString(_LANGUAGE, lang.name);
   }
 
   static Future<void>? saveApiSetting(ApiSettingModel apiSetting) {
