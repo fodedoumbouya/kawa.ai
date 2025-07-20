@@ -33,6 +33,7 @@ func EditScreen(project model.AppPlan, currentScreen string, prompt string, reco
 		fmt.Println("Structure Error: ", err)
 		return err
 	}
+	// for the user prompt to have context because each request has no context.
 	var userMsgRecord []*core.Record
 	for _, v := range msgRecord {
 		if v.GetString("role") == "user" {
@@ -69,7 +70,6 @@ func EditScreen(project model.AppPlan, currentScreen string, prompt string, reco
 		fmt.Printf("Failed JSON: %s\n", err)
 		return err
 	}
-	// fmt.Println("Response:", llmResponse)
 	if llmResponse.User.Question != "" {
 		fmt.Println("Question:", llmResponse.User.Question)
 		recordMsgModel.Set("content", llmResponse.User.Question)
@@ -168,7 +168,6 @@ func EditScreen(project model.AppPlan, currentScreen string, prompt string, reco
 	gitManger.CommitChanges(llmResponse.User.UserMessage)
 
 	return nil
-	// return nil
 }
 
 func getPackageDetailInfo(githubURL string) string {

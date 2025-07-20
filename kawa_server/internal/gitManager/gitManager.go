@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/fodedoumbouya/kawa.ai/internal/constant"
 	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 )
 
@@ -21,7 +22,7 @@ func NewGitManager(projectName, projectId string) (*GitManager, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to find root directory: %v", err)
 	}
-	rootDir += "/third_party/" + projectName
+	rootDir += fmt.Sprintf("/%s/%s", constant.GeneratedProjectDirectory, projectName)
 
 	return &GitManager{ProjectDir: rootDir}, nil
 }
@@ -187,7 +188,7 @@ func (g *GitManager) UndoLastCommit() error {
 		// Reset to the empty tree but keep the changes staged
 		cmd := exec.Command("git", "reset", "--soft", emptyTree)
 		cmd.Dir = g.ProjectDir
-		output, err := cmd.CombinedOutput()
+		_, err := cmd.CombinedOutput()
 		if err != nil {
 			// If that fails, try another approach for the initial commit
 			// We'll create an orphaned branch and then delete the original branch
@@ -200,7 +201,7 @@ func (g *GitManager) UndoLastCommit() error {
 			tempBranch := "temp_orphan"
 			cmd = exec.Command("git", "checkout", "--orphan", tempBranch)
 			cmd.Dir = g.ProjectDir
-			output, err = cmd.CombinedOutput()
+			output, err := cmd.CombinedOutput()
 			if err != nil {
 				return fmt.Errorf("git checkout --orphan failed: %w, output: %s", err, string(output))
 			}

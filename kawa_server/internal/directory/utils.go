@@ -1,8 +1,11 @@
 package directory
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/fodedoumbouya/kawa.ai/internal/constant"
 )
 
 const (
@@ -77,13 +80,13 @@ func buildDirTree(path string) (DirEntry, error) {
 
 func GetDirectory(projectName, projectId string) (DirEntry, error) {
 	projectName = projectName + "_" + projectId
-	rootDir, err := FindRootDir("kawa_server")
+	rootDir, err := FindRootDir(constant.ServerFolderName)
 	if err != nil {
 		return DirEntry{}, err
 	}
 
 	// gotta find where this function is called from editScreen
-	rootDir += "/third_party/" + projectName + "/lib"
+	rootDir += fmt.Sprintf("/%s/%s/lib", constant.GeneratedProjectDirectory, projectName)
 
 	// Build the directory tree from the root directory.
 	tree, err := buildDirTree(rootDir)

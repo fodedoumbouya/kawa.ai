@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/fodedoumbouya/kawa.ai/internal/constant"
 	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 
 	"github.com/pocketbase/pocketbase/core"
@@ -27,7 +28,7 @@ func GetVscodeUrl(c *core.RequestEvent) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, fmt.Sprintf("Error finding root directory: %v", err))
 	}
-	rootDir += "/third_party/" + projectName
+	rootDir += fmt.Sprintf("/%s/%s", constant.GeneratedProjectDirectory, projectName)
 	serverHost := os.Getenv("VSCODE_PREVIEW_HOST")
 	if serverHost == "" {
 		return c.JSON(http.StatusInternalServerError, fmt.Sprintf("Error finding server host: %v", err))

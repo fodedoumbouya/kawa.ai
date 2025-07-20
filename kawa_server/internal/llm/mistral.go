@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 
+	"github.com/fodedoumbouya/kawa.ai/internal/constant"
 	"github.com/fodedoumbouya/kawa.ai/internal/utility"
 )
 
@@ -27,8 +27,8 @@ type RequestBody struct {
 
 func RequestMistral(arguments RequestLLMArguments) (string, error) {
 	// Define the API endpoint and the API key
-	url := "https://api.mistral.ai/v1/chat/completions"
-	apiKey := os.Getenv("MISTRAL_API_KEY")
+	url := constant.MistralDefaultHostUrl
+	apiKey := arguments.APIKey
 	/// read the instruction from the markdown file
 	instructionProject, _ := utility.ReadSingleMarkdownFile(arguments.Instruction)
 

@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/fodedoumbouya/kawa.ai/internal/constant"
 	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 
 	"github.com/pocketbase/pocketbase/core"
@@ -76,7 +77,7 @@ func DownloadHandler(projectName, projectId string, c *core.RequestEvent) error 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Internal Server Error"})
 	}
-	rootDir += "/third_party/" + projectName
+	rootDir += fmt.Sprintf("/%s/%s", constant.GeneratedProjectDirectory, projectName)
 	// Check if folder exists
 	fmt.Println("rootDir: ", rootDir)
 	if _, err = os.Stat(rootDir); os.IsNotExist(err) {

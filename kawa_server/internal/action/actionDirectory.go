@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/fodedoumbouya/kawa.ai/internal/constant"
 	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 	app_model "github.com/fodedoumbouya/kawa.ai/internal/model"
 	"github.com/fodedoumbouya/kawa.ai/internal/utility"
@@ -37,7 +38,7 @@ func ApplyModifyAction(jsonData string, projectName, projectId string) error {
 	if err != nil {
 		return err
 	}
-	rootDir += "/third_party/" + projectName
+	rootDir += fmt.Sprintf("/%s/%s", constant.GeneratedProjectDirectory, projectName)
 	root, err := parseFileStructure(jsonData)
 	if err != nil {
 		fmt.Printf("Failed JSON: %s\n", err)

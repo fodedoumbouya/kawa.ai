@@ -168,10 +168,6 @@ func CreateProjectStructure(project app_model.AppPlan, c *core.RequestEvent) (st
 	}
 	projectProgess.SendProjectProgress(userRecord.BaseModel.Id, projectProgess.ProjectLaunched)
 
-	// Add activity monitoring and termination
-	// go monitorAppActivity(host, 10*time.Minute, pid)
-
-	// recordChat := core.NewRecord(collectionChat)
 	recordChat := core.NewRecord(collectionChat)
 	recordChat.Set("title", project.AppName)
 	recordChat.Set("project", recordProject.BaseModel.Id)

@@ -18,6 +18,7 @@ func GetReferences(c *core.RequestEvent) error {
 
 }
 
+// TODO: incoming features for the frontend
 func AddReferenceToScreenData(c *core.RequestEvent) error {
 	if c.Request.Method != "POST" {
 		return c.JSON(http.StatusMethodNotAllowed, map[string]string{"error": "Method not allowed"})
@@ -33,6 +34,7 @@ func AddReferenceToScreenData(c *core.RequestEvent) error {
 	return c.JSON(http.StatusOK, map[string]string{"message": "Reference added to screen"})
 }
 
+// TODO: incoming features for the frontend
 func UpdateScreenReferenceData(c *core.RequestEvent) error {
 	if c.Request.Method != "POST" {
 		return c.JSON(http.StatusMethodNotAllowed, map[string]string{"error": "Method not allowed"})

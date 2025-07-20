@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/fodedoumbouya/kawa.ai/internal/action"
+	"github.com/fodedoumbouya/kawa.ai/internal/constant"
 	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 	"github.com/fodedoumbouya/kawa.ai/internal/llm"
 	app_model "github.com/fodedoumbouya/kawa.ai/internal/model"
@@ -15,7 +16,6 @@ import (
 // / It takes a list of screens as input and returns the navigation flow of the app
 // / calling the LLM to get the navigation flow with 'navigation' instruction
 func getAppNavigationFlow(screens []string, apiKey, modelName string, llmType llm.LlmType) (app_model.AppNavigationModel, error) {
-	// appNavInstruction, _ := utility.ReadSingleMarkdownFile("navigation")
 	appNavigation, err := llm.RequestToLLM(
 
 		llm.RequestLLMArguments{
@@ -24,17 +24,12 @@ func getAppNavigationFlow(screens []string, apiKey, modelName string, llmType ll
 			ModelName:   modelName,
 			APIKey:      apiKey,
 		}, llmType)
-	// SingleCallNoMemory(appNavInstruction, fmt.Sprintf(`{"screens": %v}`, screens), "")
 	if err != nil {
 		fmt.Println("Error calling single call: ", err, "resp: ", appNavigation)
 		return app_model.AppNavigationModel{}, err
 	}
 	var appNavigationModel app_model.AppNavigationModel
 
-	// err = json.Unmarshal([]byte(appNavigation), &appNavigationModel)
-	// if err != nil {
-	// 	return app_model.AppNavigationModel{}, err
-	// }
 	decoder := json.NewDecoder(strings.NewReader(appNavigation))
 	decoder.DisallowUnknownFields()
 
@@ -126,7 +121,7 @@ func buildNavigation(navScreen app_model.File, projectName, projectId string) er
 	if err != nil {
 		return err
 	}
-	rootDir += "/third_party/" + projectName
+	rootDir += fmt.Sprintf("/%s/%s", constant.GeneratedProjectDirectory, projectName)
 
 	var root app_model.ResponseFrontCode
 

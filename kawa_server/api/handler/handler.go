@@ -4,7 +4,7 @@ import (
 	"github.com/fodedoumbouya/kawa.ai/api/config"
 	downloadHandler "github.com/fodedoumbouya/kawa.ai/api/downloadHandler"
 	editscreen "github.com/fodedoumbouya/kawa.ai/api/editScreen"
-	getVscodeHandle "github.com/fodedoumbouya/kawa.ai/api/getVscodeHandle"
+	getVscodeHandler "github.com/fodedoumbouya/kawa.ai/api/getVscodeHandler"
 	gitmanagerhandler "github.com/fodedoumbouya/kawa.ai/api/gitManagerHandler"
 	projectplan "github.com/fodedoumbouya/kawa.ai/api/projectPlan"
 	referenceshandler "github.com/fodedoumbouya/kawa.ai/api/referencesHandler"
@@ -22,15 +22,10 @@ func Handler(r *core.ServeEvent) {
 	api := r.Router.Group("/api")
 	// make it required to have a token
 	api.Bind(apis.RequireAuth())
-
-	// api.GET("/ping", func(c *core.RequestEvent) error {
-	// 	err := pbdbutil.TestRecord(c)
-	// 	if err != nil {
-	// 		return c.JSON(401, map[string]string{"error": "Unauthorized"})
-	// 	}
-
-	// 	return c.JSON(200, map[string]string{"message": "pong"})
-	// })
+	// just for test
+	apiNoAuth.GET("/ping", func(c *core.RequestEvent) error {
+		return c.JSON(200, map[string]string{"message": "pong"})
+	})
 
 	api.GET("/project/{projectId}", projectplan.GetProjectPlan)
 	api.GET("/runProject/{projectId}", projectplan.RunProject)
@@ -54,7 +49,7 @@ func Handler(r *core.ServeEvent) {
 	api.POST("/updateScreenReference", referenceshandler.UpdateScreenReferenceData)
 
 	// // redirect to project plan
-	api.GET("/getVscode/{projectId}", getVscodeHandle.GetVscodeUrl)
+	api.GET("/getVscode/{projectId}", getVscodeHandler.GetVscodeUrl)
 
 	//  no auth required on theses
 	apiNoAuth.GET("/subscribe/{projectId}", reload.SubscribeHoReloard)

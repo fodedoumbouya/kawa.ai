@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/fodedoumbouya/kawa.ai/internal/constant"
 	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 )
 
@@ -21,12 +22,12 @@ func IsAppInUse(host string) bool {
 }
 
 func DeleteFolder(projectName, projectId string) error {
-	rootDir, err := directory_utils.FindRootDir("kawa_server")
+	rootDir, err := directory_utils.FindRootDir(constant.ServerFolderName)
 	if err != nil {
 		fmt.Println("Error finding the root directory: ", err)
 		return err
 	}
-	rootDir += "/third_party"
+	rootDir += "/" + constant.GeneratedProjectDirectory
 	projectName = projectName + "_" + projectId
 	cmd := exec.Command("rm", "-rf", projectName)
 	cmd.Dir = rootDir
@@ -43,13 +44,13 @@ func RunDartApp(projectName, projectId string) (string, int, error) {
 	projectName = projectName + "_" + projectId
 	// Run the command to start the flutter app
 	cmd := exec.Command("dart", "run", "launcher.dart", projectName)
-	rootDir, err := directory_utils.FindRootDir("kawa_server")
+	rootDir, err := directory_utils.FindRootDir(constant.ServerFolderName)
 	if err != nil {
 		fmt.Println("Error finding the root directory: ", err)
 		return "", 0, err
 	}
 
-	rootDir += "/third_party/script"
+	rootDir += fmt.Sprintf("/%s/script", constant.GeneratedProjectDirectory)
 	cmd.Dir = rootDir
 
 	// Create pipes for stdout/stderr
@@ -126,12 +127,12 @@ func extractPort(line string) string {
 // create flutter project
 func CreateFlutterProject(projectName, projectId string) error {
 	projectName = projectName + "_" + projectId
-	rootDir, err := directory_utils.FindRootDir("kawa_server")
+	rootDir, err := directory_utils.FindRootDir(constant.ServerFolderName)
 	if err != nil {
 		fmt.Println("Error finding the root directory: ", err)
 		return err
 	}
-	rootDir += "/third_party"
+	rootDir += "/" + constant.GeneratedProjectDirectory
 	cmd := exec.Command("flutter", "create", projectName)
 	cmd.Dir = rootDir
 	err = cmd.Run()
