@@ -23,7 +23,7 @@ class Root extends ConsumerWidget {
             title: "Kawa.ai",
             theme: KTheme.lightTheme(),
             darkTheme: KTheme.dartTheme(),
-            themeMode: ThemeMode.system,
+            themeMode: ThemeMode.light, // force light theme for now
             debugShowCheckedModeBanner: false,
             routeInformationProvider: AppRouter.router.routeInformationProvider,
             routeInformationParser: AppRouter.router.routeInformationParser,
