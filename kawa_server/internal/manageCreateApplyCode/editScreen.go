@@ -10,7 +10,7 @@ import (
 	"sync"
 
 	"github.com/fodedoumbouya/kawa.ai/internal/action"
-	"github.com/fodedoumbouya/kawa.ai/internal/directory"
+	"github.com/fodedoumbouya/kawa.ai/internal/constant"
 	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 	"github.com/fodedoumbouya/kawa.ai/internal/llm"
 	"github.com/fodedoumbouya/kawa.ai/internal/model"
@@ -22,9 +22,9 @@ import (
 )
 
 // project app_model.AppPlan, userPrompt string, pagePath string
-func EditScreen(project model.AppPlan, currentScreen string, prompt string, recordMsgModel *core.Record, App core.App, routers, projectId, apiKey, modelName string, llmType llm.LlmType) error {
+func EditScreen(project model.AppPlan, currentScreen string, prompt string, recordMsgModel *core.Record, App core.App, routers, projectId, apiKey, modelName string, llmType llm.LlmType, msgRecord []*core.Record) error {
 	fmt.Println("Edit Screen ", project.AppName, currentScreen, prompt)
-	tree, err := directory.GetDirectory(project.AppName, projectId)
+	tree, err := directory_utils.GetDirectory(project.AppName, projectId)
 	if err != nil {
 		return err
 	}
@@ -33,11 +33,27 @@ func EditScreen(project model.AppPlan, currentScreen string, prompt string, reco
 		fmt.Println("Structure Error: ", err)
 		return err
 	}
+	// for the user prompt to have context because each request has no context.
+	var userMsgRecord []*core.Record
+	for _, v := range msgRecord {
+		if v.GetString("role") == "user" {
+			userMsgRecord = append(userMsgRecord, v)
+		}
+	}
+
+	if len(userMsgRecord) > constant.CountEditPromptMemory {
+		userMsgRecord = userMsgRecord[len(userMsgRecord)-constant.CountEditPromptMemory:]
+	}
+	if len(userMsgRecord) > 0 {
+		prompt += "\nPrevious messages:\n"
+		for _, v := range userMsgRecord {
+			prompt += v.GetString("content") + "\n"
+		}
+	}
 
 	input := preEditInputPrompt(prompt, currentScreen, sturcture)
 	// fmt.Println("Input:", input)
 	resp, err := llm.RequestToLLM(
-
 		llm.RequestLLMArguments{
 			Instruction: llm.AGENT_3_Planning_For_Coder,
 			Prompt:      input,
@@ -54,7 +70,6 @@ func EditScreen(project model.AppPlan, currentScreen string, prompt string, reco
 		fmt.Printf("Failed JSON: %s\n", err)
 		return err
 	}
-	// fmt.Println("Response:", llmResponse)
 	if llmResponse.User.Question != "" {
 		fmt.Println("Question:", llmResponse.User.Question)
 		recordMsgModel.Set("content", llmResponse.User.Question)
@@ -153,11 +168,10 @@ func EditScreen(project model.AppPlan, currentScreen string, prompt string, reco
 	gitManger.CommitChanges(llmResponse.User.UserMessage)
 
 	return nil
-	// return nil
 }
 
 func getPackageDetailInfo(githubURL string) string {
-	gitingestScript, err := directory_utils.FindRootDir("go_manage")
+	gitingestScript, err := directory_utils.FindRootDir("kawa_server")
 	if err != nil {
 		fmt.Println("Error finding root directory:", err)
 		return ""

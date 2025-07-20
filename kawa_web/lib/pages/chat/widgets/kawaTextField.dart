@@ -87,7 +87,8 @@ class _KawaTextFieldState extends BaseWidgetState<KawaTextField> {
                 textInputAction: TextInputAction.done,
                 onSubmitted: (value) {
                   if (value.isNotEmpty) {
-                    _handleSubmit();
+                    widget.onSubmitted(widget.controller.text.trim());
+                    widget.controller.clear();
                   }
                 },
               ),
@@ -100,7 +101,12 @@ class _KawaTextFieldState extends BaseWidgetState<KawaTextField> {
             bottomM: 4.0,
             borderRadius: BorderRadius.circular(KConstant.radius),
             child: IconButton(
-              onPressed: _handleSubmit,
+              onPressed: () {
+                if (_hasText) {
+                  widget.onSubmitted(widget.controller.text.trim());
+                  widget.controller.clear();
+                }
+              },
               icon: const Icon(Icons.send),
               color: bp,
               splashRadius: 20,

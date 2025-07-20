@@ -13,8 +13,6 @@ Future<void> main() async {
     (Object error, StackTrace stackTrace) async {
       AppLog.d(
           "Error Thow\n--------------------------------\nError:  $error\n\nStackTrace:  $stackTrace");
-
-      // _reportError(error, stackTrace);
     },
   );
 }

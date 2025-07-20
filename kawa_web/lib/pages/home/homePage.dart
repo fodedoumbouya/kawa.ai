@@ -148,7 +148,11 @@ class _HomePageState extends BaseWidgetState<HomePage> {
 
   void handleError(String message) {
     CoreToast.showError(message);
-    isGenerating.value = message.contains("API key") ? -1 : 2;
+    Future.delayed(const Duration(seconds: 2), () {
+      isGenerating.value = -1;
+      _progressHandler.resetProgress();
+      rebuildState();
+    });
   }
 
   @override
@@ -178,22 +182,11 @@ class _HomePageState extends BaseWidgetState<HomePage> {
     final resp = await DioUtil.deleteProject(projectId);
     if (resp) {
       CoreToast.showSuccess("Project deleted successfully");
-      // Remove the project from the list
       projects.removeWhere((project) => project.id == projectId);
       setState(() {});
     } else {
       CoreToast.showError("Error deleting project");
     }
-    // if (resp.statusCode == 200) {
-    //   // Handle success
-    //   print('Project deleted successfully');
-    //   // Remove the project from the list
-    //   projects.removeWhere((project) => project.id == projectId);
-    //   setState(() {});
-    // } else {
-    //   // Handle error
-    //   print('Error deleting project: ${resp.statusCode}');
-    // }
   }
 
   @override

@@ -25,7 +25,6 @@ class ResizeRootApp {
       width = width1;
       height = height1;
       globalKey = GlobalKey();
-      // print("s: update width: $width height: $height");
     }
   }
 }

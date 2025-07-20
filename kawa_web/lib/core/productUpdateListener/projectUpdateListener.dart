@@ -8,7 +8,8 @@ class ProjectUpdateListener {
   factory ProjectUpdateListener() => instance;
 
   // Instance method that delegates to static init method
-  Future<void> initialize() async => await ProjectUpdateListener.init();
+  Future<void> initialize({required String projectId}) async =>
+      await ProjectUpdateListener.init(projectId: projectId);
 
   // broadcast stream to listen to multiple listeners
   static final StreamController<String> streamController =
@@ -20,12 +21,11 @@ class ProjectUpdateListener {
   static bool _initializing = false;
   static Completer<void>? _initCompleter;
 
-  static Future<void> init() async {
+  static Future<void> init({required String projectId}) async {
     // If already initialized, return immediately
     if (_webSocket != null) {
       return;
     }
-
     // If currently initializing, wait for it to complete
     if (_initializing) {
       await _initCompleter!.future;
@@ -38,8 +38,8 @@ class ProjectUpdateListener {
 
     try {
       // Connect to the WebSocket server
-      _webSocket =
-          WebSocket(Uri.parse(_serverUrl), timeout: Duration(minutes: 2));
+      _webSocket = WebSocket(Uri.parse("$_serverUrl/$projectId"),
+          timeout: Duration(minutes: 2));
 
       // Listen for incoming messages
       _webSocket!.messages.listen(

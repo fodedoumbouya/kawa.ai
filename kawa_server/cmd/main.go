@@ -18,14 +18,14 @@ func init() {
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
-	// cache.CacheApp.Init()
-	reload.InitHotReload()
-	projectProgess.InitProjectProgress()
 
 }
 
 func main() {
 	app := pocketbase.New()
+	// init websocket for creating moment and refresh debug on the webUI
+	reload.InitHotReload()
+	projectProgess.InitProjectProgress()
 	app.OnServe().BindFunc(func(se *core.ServeEvent) error {
 
 		handler.Handler(se)

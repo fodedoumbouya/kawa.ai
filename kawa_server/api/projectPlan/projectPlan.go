@@ -78,7 +78,7 @@ func CreateProject(c *core.RequestEvent) error {
 		llmType)
 	if err != nil {
 		if strings.Contains(err.Error(), "400") {
-			return c.JSON(http.StatusBadRequest, fmt.Sprintf("API is not authorized"))
+			return c.JSON(http.StatusBadRequest, "API is not authorized")
 		}
 		fmt.Println("Error requesting plan manager: ", err)
 		projectProgess.SendProjectProgress(userRecord.BaseModel.Id, projectProgess.FailedToCreateProjectPlan)
@@ -89,6 +89,7 @@ func CreateProject(c *core.RequestEvent) error {
 	var appPlan app_model.AppPlan
 	err = json.Unmarshal([]byte(resp), &appPlan)
 	if err != nil {
+		fmt.Printf("Failed to unmarshal response: %s\n", resp)
 		return c.JSON(http.StatusInternalServerError, fmt.Sprintf("Error unmarshalling response: %v", err))
 	}
 	// send project progress
@@ -97,6 +98,7 @@ func CreateProject(c *core.RequestEvent) error {
 
 	host, projectId, err := mfs.CreateProjectStructure(appPlan, c)
 	if err != nil {
+		fmt.Println("Error creating project structure: ", err)
 		return c.JSON(http.StatusInternalServerError, fmt.Sprintf("Error creating project structure: %v", err))
 	}
 
@@ -157,10 +159,6 @@ func RunProject(c *core.RequestEvent) error {
 	collectionHost, err := c.App.FindCollectionByNameOrId("project_address")
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, fmt.Sprintf("Error finding collection: %v", err))
-	}
-	if err != nil {
-		fmt.Println("Error getting user from token: ", err)
-		return c.JSON(http.StatusBadRequest, "Error getting user from token")
 	}
 	hostExist, _ := c.App.FindRecordsByFilter("project_address",
 		fmt.Sprintf("project = '%s'", projectId),
@@ -265,4 +263,24 @@ func CloseProject(c *core.RequestEvent) error {
 		return c.JSON(http.StatusOK, "Project closed")
 	}
 	return c.JSON(http.StatusBadRequest, "Project does not exist")
+}
+
+// GetProjectRunningStatus
+func GetProjectRunningStatus(c *core.RequestEvent) error {
+	projectId := c.Request.PathValue("projectId")
+	hostExist, _ := c.App.FindRecordsByFilter("project_address",
+		fmt.Sprintf("project = '%s'", projectId),
+		"-created",
+		10, // limit
+		0,  // offset
+	)
+	if len(hostExist) > 0 {
+		host := hostExist[0].GetString("url")
+		isInUsing := utility.IsAppInUse(host)
+		if isInUsing {
+			return c.JSON(http.StatusOK, map[string]any{"running": true, "message": "Project is running"})
+		}
+		return c.JSON(http.StatusOK, map[string]any{"running": false, "message": "Project is not running"})
+	}
+	return c.JSON(http.StatusBadRequest, map[string]any{"running": false, "message": "Project does not exist"})
 }

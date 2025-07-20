@@ -8,6 +8,8 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 )
 
+// TODO: incoming features for the frontend
+
 type Reference struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
@@ -122,7 +124,6 @@ func AddReferenceToScreen(c *core.RequestEvent, screenName string, key string, v
 		}
 	}
 	// Add the reference
-	// screen.ScreenData = append(screen.ScreenData, Reference{Key: key, Value: value})
 	ref.Screens = append(ref.Screens, ScreenReference{ScreenName: screenName, ScreenData: []Reference{{Key: key, Value: value}}})
 	// Marshal the references
 	rawRef, err := json.Marshal(ref)

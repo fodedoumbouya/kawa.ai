@@ -1,7 +1,5 @@
 import 'package:flash/flash_helper.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kawa_web/common/adapterHelper/responsive_sizer.dart';
 import 'package:kawa_web/common/router/appRoutes.dart';
@@ -25,18 +23,11 @@ class Root extends ConsumerWidget {
             title: "Kawa.ai",
             theme: KTheme.lightTheme(),
             darkTheme: KTheme.dartTheme(),
-            // themeMode: themeState.themeMode,
+            themeMode: ThemeMode.system,
             debugShowCheckedModeBanner: false,
             routeInformationProvider: AppRouter.router.routeInformationProvider,
             routeInformationParser: AppRouter.router.routeInformationParser,
             routerDelegate: AppRouter.router.routerDelegate,
-            localizationsDelegates: const [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              DefaultCupertinoLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-
             builder: (context, child) {
               final childWithToast = Toast(
                   navigatorKey: AppRouter.navigatorKey,

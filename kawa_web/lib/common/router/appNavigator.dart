@@ -24,7 +24,6 @@ class AppNavigator {
 
   static void goKitchen({required String projectID}) {
     return clearAndNavigate(AppRoutes.kitchen(projectID: projectID));
-    // AppRouter.router.pushReplacement(AppRoutes.kitchen(projectID: projectID));
   }
 
   static void goChat() {

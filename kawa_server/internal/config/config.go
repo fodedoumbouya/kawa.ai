@@ -16,9 +16,13 @@ type APISetting struct {
 
 // list of APISetting
 var supportApiSetting = []APISetting{
+	// {
+	// 	ModelHost: llm.Gemini,
+	// 	ModelList: []string{llm.Gemini20FlashExp},
+	// },
 	{
 		ModelHost: llm.Gemini,
-		ModelList: []string{llm.Gemini20FlashExp},
+		ModelList: []string{llm.Gemini25Flash},
 	},
 	{
 		ModelHost: llm.Mistral,
@@ -30,9 +34,10 @@ func GetSupportAPISetting() []APISettingReponse {
 	var supportApiSettingReponse []APISettingReponse
 	for _, setting := range supportApiSetting {
 		modelHosh := ""
-		if setting.ModelHost == llm.Gemini {
+		switch setting.ModelHost {
+		case llm.Gemini:
 			modelHosh = "Gemini"
-		} else if setting.ModelHost == llm.Mistral {
+		case llm.Mistral:
 			modelHosh = "Mistral"
 		}
 		if modelHosh != "" {

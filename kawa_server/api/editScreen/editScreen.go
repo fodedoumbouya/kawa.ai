@@ -29,11 +29,12 @@ func EditScreenHandler(c *core.RequestEvent) error {
 		return c.JSON(http.StatusUnauthorized, "llm-key, llm-host and llm_model is required in request header")
 	}
 	var llmType llm.LlmType
-	if llm_host == "Mistral" {
+	switch llm_host {
+	case "Mistral":
 		llmType = llm.Mistral
-	} else if llm_host == "Gemini" {
+	case "Gemini":
 		llmType = llm.Gemini
-	} else {
+	default:
 		return c.JSON(http.StatusBadRequest, "llm-host is not supported")
 	}
 
@@ -62,6 +63,18 @@ func EditScreenHandler(c *core.RequestEvent) error {
 		fmt.Println("Error getting chat record: ", err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
+
+	msgRecord, err := c.App.FindRecordsByFilter("message",
+		fmt.Sprintf("chat = '%s'", chatRecord[0].Id),
+		"-created",
+		1,
+		0,
+	)
+	if err != nil {
+		fmt.Println("Error getting Message record: ", err)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
+	}
+
 	// fmt.Println("Chat Record:", chatRecord)
 	if len(chatRecord) == 0 {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Chat not found"})
@@ -92,7 +105,7 @@ func EditScreenHandler(c *core.RequestEvent) error {
 
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": err.Error()})
 	}
-	resp := managecreateapplycode.EditScreen(projectPlan, requestBody.CurrentScreen, prompt, recordMsgModel, c.App, project.GetString("routers"), project.Id, apiKey, llm_model, llmType)
+	resp := managecreateapplycode.EditScreen(projectPlan, requestBody.CurrentScreen, prompt, recordMsgModel, c.App, project.GetString("routers"), project.Id, apiKey, llm_model, llmType, msgRecord)
 	if resp != nil {
 		c.App.Delete(recordMsgModel)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": resp.Error()})

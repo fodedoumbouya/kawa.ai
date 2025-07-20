@@ -23,7 +23,8 @@ const (
 
 const (
 	GeminiExp1206      string = "gemini-exp-1206"
-	Gemini20FlashExp   string = "gemini-2.0-flash-exp" // default
+	Gemini20FlashExp   string = "gemini-2.0-flash-exp"
+	Gemini25Flash      string = "gemini-2.5-flash"
 	Gemini20ProExp0205 string = "gemini-2.0-pro-exp-02-05"
 	Gemini15Flash      string = "gemini-1.5-flash"
 	Gemini20Flash      string = "gemini-2.0-flash"
@@ -42,21 +43,23 @@ type RequestLLMArguments struct {
 }
 
 func RequestToLLM(arguments RequestLLMArguments, llmType LlmType) (string, error) {
-	if llmType == Gemini {
+	switch llmType {
+	case Gemini:
 		return RequestGemini(arguments)
-	} else if llmType == Mistral {
+	case Mistral:
 		return RequestMistral(arguments)
-	} else {
+	default:
 		return "", fmt.Errorf("llm type not supported")
 	}
 }
 
 func RequestPlanManager(llmArg RequestLLMArguments, llmType LlmType) (string, error) {
-	if llmType == Gemini {
+	switch llmType {
+	case Gemini:
 		return GeminiPlanManager(llmArg)
-	} else if llmType == Mistral {
+	case Mistral:
 		return RequestMistral(llmArg)
-	} else {
+	default:
 		return "", fmt.Errorf("llm type not supported")
 	}
 }

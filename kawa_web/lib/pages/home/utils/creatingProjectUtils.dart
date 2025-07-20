@@ -141,6 +141,15 @@ class ProjectProgressHandler {
     });
   }
 
+  void resetProgress() {
+    for (var section in _listProgress) {
+      section.status = FeatureSectionStatus.none;
+      for (var card in section.cards) {
+        card.status = FeatureSectionStatus.none;
+      }
+    }
+  }
+
   void _updateProgress(ProjectProgress progress) {
     final phase = _progressPhaseMap[progress];
     if (phase == null) return;

@@ -146,8 +146,10 @@ class _SignUpState extends BaseWidgetState<SignUp> {
             ConfirmButton(
                 txt: "Sign Up",
                 bColor: KColors.bcBlue,
-                txtSize: 13,
+                txtSize: 10,
                 width: 900,
+                elevation: 0,
+                radius: 3,
                 onPressed: () {
                   if (_emailController.text.isEmpty ||
                       _passwordController.text.isEmpty ||

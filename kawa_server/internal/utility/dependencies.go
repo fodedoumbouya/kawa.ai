@@ -2,11 +2,11 @@ package utility
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
 
+	"github.com/fodedoumbouya/kawa.ai/internal/constant"
 	"github.com/fodedoumbouya/kawa.ai/internal/directory"
 
 	"gopkg.in/yaml.v2"
@@ -22,14 +22,14 @@ type PubSpec struct {
 
 func GetDependenciesList(projectName, projectId string) ([]string, error) {
 	projectName = projectName + "_" + projectId
-	filePath, err := directory.FindRootDir("go_manage")
+	filePath, err := directory.FindRootDir("kawa_server")
 	if err != nil {
 		fmt.Println("Error finding root directory: ", err)
 		return []string{}, err
 	}
-	filePath += "/third_party/" + projectName + "/pubspec.yaml"
+	filePath += fmt.Sprintf("/%s/%s/pubspec.yaml", constant.GeneratedProjectDirectory, projectName)
 	// Read the pubspec.yaml file
-	yamlFile, err := ioutil.ReadFile(filePath)
+	yamlFile, err := os.ReadFile(filePath)
 	if err != nil {
 		fmt.Println("Error reading pubspec.yaml file: ", err)
 		return []string{}, err
@@ -54,12 +54,12 @@ func GetDependenciesList(projectName, projectId string) ([]string, error) {
 
 func InstallDependency(dependencyName string, projectName, projectId string) error {
 	projectName = projectName + "_" + projectId
-	rootDir, err := directory.FindRootDir("go_manage")
+	rootDir, err := directory.FindRootDir("kawa_server")
 	if err != nil {
 		fmt.Println("Error finding root directory: ", err)
 		return err
 	}
-	rootDir += "/third_party/" + projectName + "/"
+	rootDir += fmt.Sprintf("/%s/%s/", constant.GeneratedProjectDirectory, projectName)
 	err = os.Chdir(rootDir)
 	if err != nil {
 		fmt.Println("Error changing directory: ", err)
@@ -82,7 +82,7 @@ func InstallDependency(dependencyName string, projectName, projectId string) err
 
 func ReadFileFromLib(pathFromLib string, projectName, projectId string) (string, error) {
 	projectName = projectName + "_" + projectId
-	filePath, err := directory.FindRootDir("go_manage")
+	filePath, err := directory.FindRootDir("kawa_server")
 	if err != nil {
 		fmt.Println("Error finding root directory: ", err)
 		return "", err
@@ -91,9 +91,9 @@ func ReadFileFromLib(pathFromLib string, projectName, projectId string) (string,
 	fmt.Println("pathFromLib: ", pathFromLib)
 	fmt.Println("filePath: ", filePath)
 	fmt.Println("projectName: ", projectName)
-	filePath += "/third_party/" + projectName + "/" + pathFromLib
+	filePath += fmt.Sprintf("/%s/%s/%s", constant.GeneratedProjectDirectory, projectName, pathFromLib)
 	// Read the file
-	file, err := ioutil.ReadFile(filePath)
+	file, err := os.ReadFile(filePath)
 	if err != nil {
 		fmt.Println("Error reading file: ",
 			err)

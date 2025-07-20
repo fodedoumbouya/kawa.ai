@@ -9,7 +9,13 @@ import (
 	"github.com/pocketbase/pocketbase/core"
 )
 
-var MessageChannel = make(chan string)
+// Message represents a project-specific message
+type Message struct {
+	Content   string
+	ProjectID string
+}
+
+var MessageChannel = make(chan Message)
 
 // Upgrader to upgrade HTTP connection to WebSocket
 var upgrader = websocket.Upgrader{
@@ -20,7 +26,8 @@ var upgrader = websocket.Upgrader{
 
 // Subscriber is a connected WebSocket client
 type Subscriber struct {
-	conn *websocket.Conn
+	conn      *websocket.Conn
+	projectID string
 }
 
 // SubscriberManager manages connected subscribers
@@ -41,33 +48,44 @@ func (sm *SubscriberManager) removeSubscriber(s *Subscriber) {
 	sm.mux.Unlock()
 }
 
-func (sm *SubscriberManager) broadcast(message string) {
+func (sm *SubscriberManager) broadcast(message Message) {
 	sm.mux.Lock()
 	defer sm.mux.Unlock()
 	for subscriber := range sm.subscribers {
-		err := subscriber.conn.WriteMessage(websocket.TextMessage, []byte(message))
-		if err != nil {
-			subscriber.conn.Close()
-			delete(sm.subscribers, subscriber)
+		// Only send message to subscribers of the same project
+		if subscriber.projectID == message.ProjectID {
+			err := subscriber.conn.WriteMessage(websocket.TextMessage, []byte(message.Content))
+			if err != nil {
+				subscriber.conn.Close()
+				delete(sm.subscribers, subscriber)
+			}
 		}
 	}
 }
 
 var manager = &SubscriberManager{subscribers: make(map[*Subscriber]bool)}
 
-func SendHotReload(message string) {
-	MessageChannel <- message
-
+func SendHotReload(message string, projectId string) {
+	MessageChannel <- Message{
+		Content:   message,
+		ProjectID: projectId,
+	}
 }
 
 // field Writer gin.ResponseWriter
 func SubscribeHoReloard(c *core.RequestEvent) error {
+	// Get project ID from query parameters
+	projectID := c.Request.PathValue("projectId")
+	if projectID == "" {
+		return c.JSON(http.StatusBadRequest, "projectId parameter is required")
+	}
+
 	conn, err := upgrader.Upgrade(c.Response, c.Request, nil)
-	fmt.Println("SubscribeHoReloard")
+	fmt.Println("SubscribeHoReloard for project:", projectID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, "Failed to upgrade connection")
 	}
-	subscriber := &Subscriber{conn: conn}
+	subscriber := &Subscriber{conn: conn, projectID: projectID}
 	manager.addSubscriber(subscriber)
 	defer manager.removeSubscriber(subscriber)
 
@@ -76,15 +94,16 @@ func SubscribeHoReloard(c *core.RequestEvent) error {
 		if err != nil {
 			break
 		}
-		fmt.Printf("Message received by subscriber: %s\n", p)
+		fmt.Printf("Message received by subscriber for project %s: %s\n", projectID, p)
 	}
 	return nil
 }
 
 func SendHotReloadExterne(c *core.RequestEvent) error {
 	var request struct {
-		Code   string `json:"code"`
-		Screen string `json:"screen"`
+		Code      string `json:"code"`
+		Screen    string `json:"screen"`
+		ProjectId string `json:"projectId"`
 	}
 	if err := c.BindBody(&request); err != nil {
 		// c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -96,7 +115,7 @@ func SendHotReloadExterne(c *core.RequestEvent) error {
 		return c.JSON(http.StatusBadRequest, "message field is required")
 	}
 	msg := fmt.Sprintf(`{"code": "%s", "screen": "%s"}`, request.Code, request.Screen)
-	SendHotReload(msg)
+	SendHotReload(msg, request.ProjectId)
 	// c.JSON(http.StatusOK, gin.H{"status": "Message sent"})
 	return c.JSON(http.StatusOK, "Message sent")
 }

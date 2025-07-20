@@ -5,18 +5,19 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/fodedoumbouya/kawa.ai/internal/constant"
 	directory_utils "github.com/fodedoumbouya/kawa.ai/internal/directory"
 )
 
 func ReadSingleMarkdownFile(filename string) (string, error) {
 	// Get the current working directory
 	// currentDir, err := os.Getwd()
-	projectDir, err := directory_utils.FindRootDir("kawa.ai")
+	projectDir, err := directory_utils.FindRootDir(constant.ProjectName)
 	if err != nil {
 		fmt.Println("error getting current directory:", err)
 		return "", fmt.Errorf("error getting current directory: %v", err)
 	}
-	projectDir += "/prompts"
+	projectDir += "/" + constant.PromptsFolderName
 	filename = fmt.Sprintf("%s.md", filename)
 	// Construct the full path to the file
 	filePath := filepath.Join(projectDir, filename)

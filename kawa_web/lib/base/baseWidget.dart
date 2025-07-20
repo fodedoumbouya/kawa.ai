@@ -25,8 +25,6 @@ abstract class BaseWidgetState<T extends BaseWidget> extends ConsumerState<T>
     with WidgetsBindingObserver {
   @override
   void initState() {
-    // Initialize the Lang state
-    // transText = langProvider.getFunction(ref).getTransText;
     // / Register your State class as a binding observer
     WidgetsBinding.instance.addObserver(this);
     super.initState();
@@ -103,36 +101,20 @@ abstract class BaseWidgetState<T extends BaseWidget> extends ConsumerState<T>
   }
 
   Future toPage(Widget w) {
-    // AppLog.d("Moving to page: ${w.toStringShallow()}\n");
-    // return NavigatorUtils.instance.toPage(w, context);
     return Navigator.of(context).push(MaterialPageRoute(builder: (context) {
       return w;
     }));
   }
 
   void jumpToPage(Widget w) {
-    // NavigatorUtils.instance.jumpToPage(w, context);
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) {
       return w;
     }));
   }
 
-  // void backHome() {
-  //   NavigatorUtils.instance.backHome(context);
-  // }
-
-  // void jumpCleanToPage(Widget w) {
-  //   NavigatorUtils.instance.jumpCleanToPage(w, context);
-  // }
-
   void pop([Object? o]) {
-    // NavigatorUtils.instance.pop(context, o: o);
     Navigator.of(context).pop(o);
   }
-
-  // void popUntil(Widget w) {
-  //   NavigatorUtils.instance.popUntil(w, context);
-  // }
 
   //get Unique ID
   String getUniqueID() {

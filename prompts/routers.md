@@ -80,6 +80,9 @@ List<RouteBase> appRouter = <RouteBase>[
 
 ];
 
+
+ **Note:** for the AppNavigator class, You must use put the `parent` path in the `go` method to navigate to the child routes. For example, to navigate to the search screen, use `AppRouter.router.go("${AppRoutes.home}${AppRoutes.search(id: id)}");`
+
 class AppNavigator {
   AppNavigator._();
 
@@ -91,8 +94,9 @@ class AppNavigator {
     AppRouter.router.pop();
   }
 
+
   static void goSearch({required String id}) {
-    AppRouter.router.go(AppRoutes.search(id: id));
+    AppRouter.router.go("${AppRoutes.home}${AppRoutes.search(id: id)}");
   }
 
   static void goLogin() {
@@ -114,7 +118,17 @@ class NotFoundScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Not Found')),
-      body: const Center(child: Text('404 Not Found')),
+      body: const Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('404 - Page Not Found', style: TextStyle(fontSize: 24)),
+          SizedBox(height: 20),
+         Button(
+            onPressed: () => AppNavigator.goBack(),
+            child: Text('Go to Back', style: TextStyle(fontSize: 18)),
+          ),
+        ],
+      )),
     );
   }
 }
