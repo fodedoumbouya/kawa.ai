@@ -12,6 +12,11 @@ Kawa.ai offers a comprehensive suite of features to streamline the development a
 - **Cross-Platform Compatibility 💻**: Run Kawa.ai on any operating system that supports Golang, Python, and Dart & Flutter.
 - **Scalability 📈**: Optimized for performance and scalability, suitable for both small and large applications.
 
+## Demo
+
+https://github.com/user-attachments/assets/5a84028e-dee9-495e-807d-a8d67313ee57
+
+
 ## Requirements ✔️
 To install and run Kawa.ai, ensure you have the following dependencies installed on your machine:
 

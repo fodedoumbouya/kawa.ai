@@ -131,6 +131,7 @@ class ProjectProgressHandler {
   };
 
   void startListening(VoidCallback onUpdate) {
+    resetProgress();
     _subscription = CreatingProjectListener.streamController.stream
         .listen((progressString) {
       final progress = ProjectProgress.fromString(progressString);

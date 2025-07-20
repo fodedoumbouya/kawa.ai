@@ -44,12 +44,13 @@ func CreateProject(c *core.RequestEvent) error {
 		return c.JSON(http.StatusUnauthorized, "llm-key, llm-host and llm_model is required in request header")
 	}
 	var llmType llm.LlmType
-	if llm_host == "Mistral" {
+	switch llm_host {
+	case "Mistral":
 		llmType = llm.Mistral
-	} else if llm_host == "Gemini" {
+	case "Gemini":
 		llmType = llm.Gemini
-	} else {
-		fmt.Println("llm-host is not supported")
+	default:
+		// fmt.Println("llm-host is not supported")
 		return c.JSON(http.StatusBadRequest, "llm-host is not supported")
 	}
 
@@ -60,7 +61,7 @@ func CreateProject(c *core.RequestEvent) error {
 	}
 	userRecord, err := pbdbutil.GetUserFromToken(c)
 	if err != nil {
-		fmt.Println("Error getting user from token: ", err)
+		// fmt.Println("Error getting user from token: ", err)
 		return c.JSON(http.StatusBadRequest, "Error getting user from token")
 	}
 
@@ -80,7 +81,7 @@ func CreateProject(c *core.RequestEvent) error {
 		if strings.Contains(err.Error(), "400") {
 			return c.JSON(http.StatusBadRequest, "API is not authorized")
 		}
-		fmt.Println("Error requesting plan manager: ", err)
+		// fmt.Println("Error requesting plan manager: ", err)
 		projectProgess.SendProjectProgress(userRecord.BaseModel.Id, projectProgess.FailedToCreateProjectPlan)
 		return c.JSON(http.StatusInternalServerError, fmt.Sprintf("Error requesting plan manager: %v", err))
 	}
@@ -251,10 +252,18 @@ func CloseProject(c *core.RequestEvent) error {
 		if isInUsing {
 			pid := hostExist[0].GetString("pid")
 			pidInd, err := strconv.Atoi(pid)
+			if pid == "0" || pid == "" {
+				port := host[strings.LastIndex(host, ":")+1:]
+				pidInd, _ = utility.ExactPidDart(port)
+			}
+
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, fmt.Sprintf("Error converting pid to int: %v", err))
 			}
-			utility.TerminateApp(pidInd)
+			err = utility.TerminateApp(pidInd)
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, fmt.Sprintf("Error terminating app: %v", err))
+			}
 		}
 		err := c.App.Delete(hostExist[0])
 		if err != nil {

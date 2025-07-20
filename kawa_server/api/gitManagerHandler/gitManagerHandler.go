@@ -206,7 +206,7 @@ func HandleGetStatusHandler(c *core.RequestEvent) error {
 		CanForward:   canForward,
 		CurrentState: currentCommit,
 	}
-	fmt.Println(resp.CanForward) // Print the response for debugging purposes
+	// fmt.Println(resp.CanForward) // Print the response for debugging purposes
 
 	return c.JSON(http.StatusOK, resp)
 }

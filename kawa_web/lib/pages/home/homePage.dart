@@ -143,6 +143,7 @@ class _HomePageState extends BaseWidgetState<HomePage> {
       handleError("Error generating project: $e");
     } finally {
       rebuildState();
+      initData();
     }
   }
 
@@ -169,8 +170,8 @@ class _HomePageState extends BaseWidgetState<HomePage> {
 
   @override
   void initState() {
-    initData();
     super.initState();
+    initData();
     _progressHandler = ProjectProgressHandler(_listProgress);
     _progressHandler.startListening(() => setState(() {}));
     _controller.addListener(() {
@@ -268,7 +269,6 @@ class _HomePageState extends BaseWidgetState<HomePage> {
                                                 "Please set your API key and host in the settings");
                                             return;
                                           }
-
                                           AppNavigator.goKitchen(
                                               projectID: project.id);
                                         },

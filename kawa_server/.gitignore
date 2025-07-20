@@ -1,7 +1,7 @@
 .env
 data/
-third_party/flutter_project/
 cmd/pb_data/
 *.db
-/third_party/*
+generated_projects/*
+!/generated_projects/readMe
 .vscode/
