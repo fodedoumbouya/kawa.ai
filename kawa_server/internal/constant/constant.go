@@ -14,5 +14,5 @@ const (
 	// Server folder name
 	ServerFolderName = "kawa_server"
 	// Generated projects directory
-	GeneratedProjectDirectory = "third_party"
+	GeneratedProjectDirectory = "generated_projects"
 )
