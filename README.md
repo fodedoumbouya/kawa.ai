@@ -65,6 +65,10 @@ Once Kawa.ai is installed, you can start creating applications using the web int
 	- Create new applications ✨
 	- Manage existing applications 🗂️
 	- Debug applications using the built-in VsCode debugger 🛠️
+3. For the backend data management (pocketBase):
+   	```
+	http://localhost:8090
+	```
 
 ## Approach 💡  
 Kawa.ai is designed with a modular and scalable architecture that ensures each request to the LLM is self-contained. This means that each request is independent and does not rely on context or state from previous requests. This approach offers several advantages:
