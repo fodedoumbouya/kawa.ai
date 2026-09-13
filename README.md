@@ -1,3 +1,5 @@
+
+
 # kawa.ai 🚀
 Kawa.ai is a platform for building applications using the power of large language models (LLMs). It provides a simple interface to create, manage, and download applications that leverage LLMs for various tasks. 🤖
 > ⚠️ **Note**:This project is currently under development. We are actively working on features and improvements. Stay tuned ! ⚠️
@@ -74,6 +76,7 @@ Once Kawa.ai is installed, you can start creating applications using the web int
    	```
 	http://localhost:8090
 	```
+    API routes are served under `/api`.
 
 ## Approach 💡  
 Kawa.ai is designed with a modular and scalable architecture that ensures each request to the LLM is self-contained. This means that each request is independent and does not rely on context or state from previous requests. This approach offers several advantages:
